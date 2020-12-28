@@ -1,0 +1,6 @@
+app:
+  datasource:
+    jdbc-url: jdbc:oracle:thin:@localhost:1521/ORCLCDB.localdomain
+    username: admin
+    password: admin
+    pool-size: 30

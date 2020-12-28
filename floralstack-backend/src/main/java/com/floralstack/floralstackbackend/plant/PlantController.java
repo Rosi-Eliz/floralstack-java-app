@@ -11,15 +11,15 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("api/plants")
 public class PlantController {
-    private final PlantDataAccessServiceProvider plantService;
+    private final PlantService plantService;
 
     @Autowired
-    public PlantController(PlantDataAccessServiceProvider plantService) {
+    public PlantController(PlantService plantService) {
         this.plantService = plantService;
 
     }
     @PostMapping
     public void addPlant(@RequestBody @Valid Plant plant){
-        plantService.addPlant(plant);
+        plantService.createPlant(plant);
     }
 }
