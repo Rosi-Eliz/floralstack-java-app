@@ -20,17 +20,15 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
 
         String sql = "" +
                 "INSERT INTO plant (" +
-                " id, " +
                 " name, " +
                 " description, " +
                 " environment_ID, " +
                 " owner_ID, " +
                 " action_record_ID) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, ?, ?)";
 
         return jdbcTemplate.update(
                 sql,
-                plant.getId(),
                 plant.getName(),
                 plant.getDescription(),
                 plant.getEnvironment_ID(),
