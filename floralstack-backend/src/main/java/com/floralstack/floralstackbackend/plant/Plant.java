@@ -3,28 +3,26 @@ package com.floralstack.floralstackbackend.plant;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class Plant {
     private final Integer id;
     @NotBlank
     private final String name;
     private final String description;
-    private final Integer environment_ID;
-    private final Integer owner_ID;
-    private final Integer action_record_ID;
+    private final Integer environmentID;
+    private final Integer ownerID;
 
     public Plant(@JsonProperty("id") Integer id,
                  @JsonProperty("name") String name,
                  @JsonProperty("description") String description,
-                 @JsonProperty("environment_ID") Integer environment_ID,
-                 @JsonProperty("owner_ID") Integer owner_ID,
-                 @JsonProperty("action_record_ID") Integer action_record_ID) {
+                 @JsonProperty("environment_ID") Integer environmentID,
+                 @JsonProperty("owner_ID") Integer ownerID) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.environment_ID = environment_ID;
-        this.owner_ID = owner_ID;
-        this.action_record_ID = action_record_ID;
+        this.environmentID = environmentID;
+        this.ownerID = ownerID;
     }
 
     public Integer getId() {
@@ -39,17 +37,14 @@ public class Plant {
         return description;
     }
 
-    public Integer getEnvironment_ID() {
-        return environment_ID;
+    public Integer getEnvironmentID() {
+        return environmentID;
     }
 
-    public Integer getOwner_ID() {
-        return owner_ID;
+    public Integer getOwnerID() {
+        return ownerID;
     }
 
-    public Integer getAction_record_ID() {
-        return action_record_ID;
-    }
 
     @Override
     public String toString() {
@@ -57,10 +52,8 @@ public class Plant {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", environment_ID=" + environment_ID +
-                ", owner_ID=" + owner_ID +
-                ", action_record_ID=" + action_record_ID +
+                ", environment_ID=" + environmentID +
+                ", owner_ID=" + ownerID +
                 '}';
     }
-
 }

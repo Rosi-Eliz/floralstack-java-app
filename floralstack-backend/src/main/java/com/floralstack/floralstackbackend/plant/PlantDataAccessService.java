@@ -1,12 +1,17 @@
 package com.floralstack.floralstackbackend.plant;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import javax.validation.Valid;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.List;
 
 @Repository
 public class PlantDataAccessService implements PlantDataAccessServiceProvider{
@@ -19,28 +24,36 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
     @Override
     public int createPlant(@Valid Plant plant) {
 
-        String sql = "" +
+        String query = "" +
                 "INSERT INTO plant (" +
                 " name, " +
                 " description, " +
                 " environment_ID, " +
-                " owner_ID, " +
-                " action_record_ID) " +
-                "VALUES (?, ?, ?, ?, ?)";
+                " owner_ID) " +
+                "VALUES (?, ?, ?, ?)";
 
         return jdbcTemplate.update(
-                sql,
+                query,
                 plant.getName(),
                 plant.getDescription(),
-                plant.getEnvironment_ID(),
-                plant.getOwner_ID(),
-                plant.getAction_record_ID()
+                plant.getEnvironmentID(),
+                plant.getOwnerID()
         );
     }
 
     @Override
     public Plant getPlant(Integer id) {
-        String sql = "" +
+        String query = "" +
+                "SELECT *" +
+                "FROM plant " +
+                "WHERE " +
+                "id = ?";
+        return jdbcTemplate.queryForObject(query, mapPlantFomDb(), id);
+    }
+
+    @Override
+    public List<Plant> getPlantsForOwner(Integer id) {
+        String query = "" +
                 "SELECT " +
                 "id, " +
                 "name, " +
@@ -50,22 +63,67 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 "action_record_ID " +
                 "FROM plant " +
                 "WHERE " +
-                "id = ?";
-        Plant plant = jdbcTemplate.queryForObject(sql, mapPlantFomDb(), id);
-        return plant;
+                "owner_ID = ?";
+        return jdbcTemplate.query(query, mapPlantFomDb(), id);
+    }
+
+    @Override
+    public List<Plant> getAllPlants() {
+        String query = "" +
+                "SELECT " +
+                "id, " +
+                "name, " +
+                "description, " +
+                "owner_ID, " +
+                "environment_ID, " +
+                "action_record_ID " +
+                "FROM plant ";
+        return jdbcTemplate.query(query, mapPlantFomDb());
+    }
+
+    @Override
+    public int updatePlant(Plant plant) {
+        String query = "" +
+                "UPDATE plant " +
+                "SET name = ?, " +
+                "description = ?, " +
+                "owner_ID = ?, " +
+                "environment_ID = ? " +
+                "WHERE id = ?";
+
+        return jdbcTemplate.update(
+                query,
+                plant.getName(),
+                plant.getDescription(),
+                plant.getOwnerID(),
+                plant.getEnvironmentID(),
+                plant.getId());
+    }
+
+    @Override
+    public int deletePlant(Integer id) {
+        String query = "" +
+                "DELETE FROM plant " +
+                "WHERE id = ?";
+        return jdbcTemplate.update(query, id);
     }
 
     // Mappers
 
     private RowMapper<Plant> mapPlantFomDb() {
         RowMapper<Plant> rowMapper = (resultSet, i) -> {
+            String description = resultSet.getString("description");
+            description = resultSet.wasNull() ? null : description;
+            Integer ownerID = resultSet.getInt("owner_ID");
+            ownerID = resultSet.wasNull() ? null : ownerID;
+            Integer environmentID = resultSet.getInt("environment_ID");
+            environmentID = resultSet.wasNull() ? null : environmentID;
+
             Plant plant =  new Plant(resultSet.getInt("id"),
                     resultSet.getString("name"),
-                    resultSet.getString("description"),
-                    resultSet.getInt("owner_ID"),
-                    resultSet.getInt("environment_ID"),
-                    resultSet.getInt("action_record_ID"));
-            resultSet.next();
+                    description,
+                    ownerID,
+                    environmentID);
             return plant;
         };
         return rowMapper;
