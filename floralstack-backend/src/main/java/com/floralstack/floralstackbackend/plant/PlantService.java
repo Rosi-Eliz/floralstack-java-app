@@ -16,4 +16,5 @@ public class PlantService {
     void createPlant(Plant plant) {
         plantDataAccessServiceProvider.createPlant(plant);
     }
+    Plant getPlant(Integer id) { return plantDataAccessServiceProvider.getPlant(id); };
 }

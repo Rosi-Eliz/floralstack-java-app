@@ -1,10 +1,7 @@
 package com.floralstack.floralstackbackend.plant;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -21,5 +18,10 @@ public class PlantController {
     @PostMapping
     public void addPlant(@RequestBody @Valid Plant plant){
         plantService.createPlant(plant);
+    }
+
+    @GetMapping(path = "{id}")
+    public Plant getPlant(@PathVariable("id") Integer id) {
+        return plantService.getPlant(id);
     }
 }

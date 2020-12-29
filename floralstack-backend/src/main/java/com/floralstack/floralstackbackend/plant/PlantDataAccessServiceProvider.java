@@ -6,4 +6,5 @@ import javax.validation.Valid;
 
 public interface PlantDataAccessServiceProvider {
     int createPlant(Plant plant);
+    Plant getPlant(Integer id);
 }
