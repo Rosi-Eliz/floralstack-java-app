@@ -1,6 +1,6 @@
 app:
   datasource:
     jdbc-url: jdbc:oracle:thin:@localhost:1521/ORCLCDB.localdomain
-    username: admin
+    username: c##admin
     password: admin
     pool-size: 30

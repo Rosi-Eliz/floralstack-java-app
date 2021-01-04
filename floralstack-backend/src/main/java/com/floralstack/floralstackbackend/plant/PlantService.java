@@ -2,6 +2,8 @@ package com.floralstack.floralstackbackend.plant;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 import java.util.List;
 import  com.floralstack.floralstackbackend.exception.*;
 
@@ -15,13 +17,19 @@ public class PlantService {
         this.plantDataAccessServiceProvider = plantDataAccessServiceProvider;
     }
 
-    void createPlant(Plant plant) { plantDataAccessServiceProvider.createPlant(plant); }
+    void createPlant(Plant plant) {
+        Date currentDate = new Date();
+        plantDataAccessServiceProvider.createPlant(plant, currentDate);
+    }
 
     void updatePlant(Plant plant) {
         if (plant.getId() == null) {
-            throw new ApiRequestException("missing required parameter id");
+            throw ApiRequestExceptionFactory.missingIdException;
         }
-        plantDataAccessServiceProvider.updatePlant(plant);
+        Integer update = plantDataAccessServiceProvider.updatePlant(plant);
+        if (update == 0) {
+            throw ApiRequestExceptionFactory.failedUpdateException;
+        }
     }
 
     Plant getPlant(Integer id) { return plantDataAccessServiceProvider.getPlant(id); };
@@ -30,5 +38,10 @@ public class PlantService {
 
     List<Plant> getPlantsForOwner(Integer id) { return plantDataAccessServiceProvider.getPlantsForOwner(id); }
 
-    void deletePlant(Integer id) { plantDataAccessServiceProvider.deletePlant(id); }
+    void deletePlant(Integer id) {
+        Integer delete = plantDataAccessServiceProvider.deletePlant(id);
+        if (delete == 0) {
+            throw ApiRequestExceptionFactory.failedDeleteException;
+        }
+    }
 }

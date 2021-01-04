@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -22,22 +23,24 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
     }
 
     @Override
-    public int createPlant(@Valid Plant plant) {
+    public int createPlant(@Valid Plant plant, Date creationDate) {
 
         String query = "" +
                 "INSERT INTO plant (" +
                 " name, " +
                 " description, " +
-                " environment_ID, " +
-                " owner_ID) " +
-                "VALUES (?, ?, ?, ?)";
+                " environment_id, " +
+                " owner_id," +
+                " creation_date) " +
+                "VALUES (?, ?, ?, ?, ?)";
 
         return jdbcTemplate.update(
                 query,
                 plant.getName(),
                 plant.getDescription(),
                 plant.getEnvironmentID(),
-                plant.getOwnerID()
+                plant.getOwnerID(),
+                creationDate
         );
     }
 
@@ -58,12 +61,12 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 "id, " +
                 "name, " +
                 "description, " +
-                "owner_ID, " +
-                "environment_ID, " +
-                "action_record_ID " +
+                "owner_id, " +
+                "environment_id, " +
+                "creation_date " +
                 "FROM plant " +
                 "WHERE " +
-                "owner_ID = ?";
+                "owner_id = ?";
         return jdbcTemplate.query(query, mapPlantFomDb(), id);
     }
 
@@ -74,21 +77,22 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 "id, " +
                 "name, " +
                 "description, " +
-                "owner_ID, " +
-                "environment_ID, " +
-                "action_record_ID " +
+                "owner_id, " +
+                "environment_id, " +
+                "creation_date " +
                 "FROM plant ";
         return jdbcTemplate.query(query, mapPlantFomDb());
     }
 
     @Override
-    public int updatePlant(Plant plant) {
+    public Integer updatePlant(Plant plant) {
         String query = "" +
                 "UPDATE plant " +
                 "SET name = ?, " +
                 "description = ?, " +
-                "owner_ID = ?, " +
-                "environment_ID = ? " +
+                "owner_id = ?, " +
+                "environment_id = ?, " +
+                "creation_date = ?" +
                 "WHERE id = ?";
 
         return jdbcTemplate.update(
@@ -97,11 +101,12 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 plant.getDescription(),
                 plant.getOwnerID(),
                 plant.getEnvironmentID(),
+                plant.getCreationDate(),
                 plant.getId());
     }
 
     @Override
-    public int deletePlant(Integer id) {
+    public Integer deletePlant(Integer id) {
         String query = "" +
                 "DELETE FROM plant " +
                 "WHERE id = ?";
@@ -114,16 +119,18 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
         RowMapper<Plant> rowMapper = (resultSet, i) -> {
             String description = resultSet.getString("description");
             description = resultSet.wasNull() ? null : description;
-            Integer ownerID = resultSet.getInt("owner_ID");
+            Integer ownerID = resultSet.getInt("owner_id");
             ownerID = resultSet.wasNull() ? null : ownerID;
-            Integer environmentID = resultSet.getInt("environment_ID");
+            Integer environmentID = resultSet.getInt("environment_id");
             environmentID = resultSet.wasNull() ? null : environmentID;
+            Date creationDate = resultSet.getDate("creation_date");
 
             Plant plant =  new Plant(resultSet.getInt("id"),
                     resultSet.getString("name"),
                     description,
                     ownerID,
-                    environmentID);
+                    environmentID,
+                    creationDate);
             return plant;
         };
         return rowMapper;
