@@ -35,6 +35,11 @@ public class PlantController {
         return plantService.getPlantsForOwner(id);
     }
 
+    @GetMapping(path = "environment/{id}")
+    public List<Plant> getAllPlantsForEnvironment(@PathVariable("id") Integer id) {
+        return plantService.getAllPlantsForEnvironment(id);
+    }
+
     @PutMapping
     public void updatePlant(@RequestBody @Valid Plant plant){
         plantService.updatePlant(plant);

@@ -1,9 +1,8 @@
 CREATE TABLE environment
 (
     id INTEGER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) NOT NULL,
-    name VARCHAR2(30),
+    name VARCHAR2(40) NOT NULL,
     description VARCHAR2(100),
-    action_record_id INTEGER UNIQUE,
     PRIMARY KEY (id)
 );
 
