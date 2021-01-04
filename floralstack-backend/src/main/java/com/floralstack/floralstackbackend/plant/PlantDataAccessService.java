@@ -70,6 +70,15 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
         return jdbcTemplate.query(query, mapPlantFomDb(), id);
     }
 
+
+    @Override
+    public List<Plant> getAllPlantsForEnvironment(Integer id) {
+        String query = "" +
+                "SELECT * FROM plant" +
+                "WHERE environment_id = ?";
+        return jdbcTemplate.query(query, mapPlantFomDb(), id);
+    }
+
     @Override
     public List<Plant> getAllPlants() {
         String query = "" +
@@ -92,7 +101,7 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 "description = ?, " +
                 "owner_id = ?, " +
                 "environment_id = ?, " +
-                "creation_date = ?" +
+                "creation_date = ? " +
                 "WHERE id = ?";
 
         return jdbcTemplate.update(

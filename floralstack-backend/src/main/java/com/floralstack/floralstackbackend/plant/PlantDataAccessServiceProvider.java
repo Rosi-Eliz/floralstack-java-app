@@ -10,6 +10,7 @@ public interface PlantDataAccessServiceProvider {
     int createPlant(Plant plant, Date creationDate);
     Plant getPlant(Integer id);
     List<Plant> getPlantsForOwner(Integer id);
+    List<Plant> getAllPlantsForEnvironment(Integer id);
     List<Plant> getAllPlants();
     Integer updatePlant(Plant plant);
     Integer deletePlant(Integer id);

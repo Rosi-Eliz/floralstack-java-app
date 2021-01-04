@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Repository
@@ -17,7 +18,7 @@ public class UserDataAccessService implements UserDataAccessServiceProvider{
     }
 
     @Override
-    public Integer createUser(User user) {
+    public Integer createUser(@Valid User user) {
         String query = "" +
                 "INSERT INTO \"USER\" (" +
                 "first_name, " +

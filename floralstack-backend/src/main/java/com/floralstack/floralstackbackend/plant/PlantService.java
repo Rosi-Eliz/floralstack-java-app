@@ -38,6 +38,10 @@ public class PlantService {
 
     List<Plant> getPlantsForOwner(Integer id) { return plantDataAccessServiceProvider.getPlantsForOwner(id); }
 
+    public List<Plant> getAllPlantsForEnvironment(Integer id) {
+        return plantDataAccessServiceProvider.getAllPlantsForEnvironment(id);
+    }
+
     void deletePlant(Integer id) {
         Integer delete = plantDataAccessServiceProvider.deletePlant(id);
         if (delete == 0) {
