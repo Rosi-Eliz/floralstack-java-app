@@ -1,0 +1,7 @@
+package com.floralstack.floralstackbackend.exception;
+
+public class ApiRequestExceptionFactory {
+    public static ApiRequestException failedUpdateException = new ApiRequestException("Failed update, something went wrong!");
+    public static ApiRequestException failedDeleteException = new ApiRequestException("Failed deletion, something went wrong!");
+    public static ApiRequestException missingIdException = new ApiRequestException("Missing required parameter id");
+}

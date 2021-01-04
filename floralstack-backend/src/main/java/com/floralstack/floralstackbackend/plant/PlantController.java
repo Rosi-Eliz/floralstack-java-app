@@ -14,7 +14,6 @@ public class PlantController {
     @Autowired
     public PlantController(PlantService plantService) {
         this.plantService = plantService;
-
     }
     @PostMapping
     public void addPlant(@RequestBody @Valid Plant plant){

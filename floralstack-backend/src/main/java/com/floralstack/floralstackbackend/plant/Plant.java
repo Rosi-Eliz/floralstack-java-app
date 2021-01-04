@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 public class Plant {
     private final Integer id;
@@ -12,17 +13,20 @@ public class Plant {
     private final String description;
     private final Integer environmentID;
     private final Integer ownerID;
+    private final Date creationDate;
 
     public Plant(@JsonProperty("id") Integer id,
                  @JsonProperty("name") String name,
                  @JsonProperty("description") String description,
-                 @JsonProperty("environment_ID") Integer environmentID,
-                 @JsonProperty("owner_ID") Integer ownerID) {
+                 @JsonProperty("environment_id") Integer environmentID,
+                 @JsonProperty("owner_id") Integer ownerID,
+                 @JsonProperty("creation_date") Date creationDate) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.environmentID = environmentID;
         this.ownerID = ownerID;
+        this.creationDate = creationDate;
     }
 
     public Integer getId() {
@@ -45,6 +49,9 @@ public class Plant {
         return ownerID;
     }
 
+    public Date getCreationDate() {
+        return creationDate;
+    }
 
     @Override
     public String toString() {
@@ -52,8 +59,9 @@ public class Plant {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", environment_ID=" + environmentID +
-                ", owner_ID=" + ownerID +
+                ", environment_id=" + environmentID +
+                ", owner_id=" + ownerID +
+                ", creation_date=" + creationDate +
                 '}';
     }
 }
