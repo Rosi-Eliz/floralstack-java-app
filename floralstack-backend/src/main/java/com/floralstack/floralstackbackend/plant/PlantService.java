@@ -42,7 +42,7 @@ public class PlantService {
         return plantDataAccessServiceProvider.getAllPlantsForEnvironment(id);
     }
 
-    void deletePlant(Integer id) {
+    public void deletePlant(Integer id) {
         Integer delete = plantDataAccessServiceProvider.deletePlant(id);
         if (delete == 0) {
             throw ApiRequestExceptionFactory.failedDeleteException;

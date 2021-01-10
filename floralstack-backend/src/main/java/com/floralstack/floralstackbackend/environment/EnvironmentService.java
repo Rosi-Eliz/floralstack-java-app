@@ -1,5 +1,6 @@
 package com.floralstack.floralstackbackend.environment;
 
+import com.floralstack.floralstackbackend.exception.ApiRequestExceptionFactory;
 import com.floralstack.floralstackbackend.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,11 +29,19 @@ public class EnvironmentService {
     }
 
     public void updateEnvironment(Environment environment) {
-        environmentDataAccessServiceProvider.updateEnvironment(environment);
+        Integer update = environmentDataAccessServiceProvider.updateEnvironment(environment);
+        if(update == 0)
+        {
+            throw ApiRequestExceptionFactory.failedUpdateException;
+        }
     }
 
     public void deleteEnvironment(Integer id) {
-        environmentDataAccessServiceProvider.deleteEnvironment(id);
+        Integer delete =  environmentDataAccessServiceProvider.deleteEnvironment(id);
+        if(delete == 0)
+        {
+            throw ApiRequestExceptionFactory.failedDeleteException;
+        }
     }
 
 }

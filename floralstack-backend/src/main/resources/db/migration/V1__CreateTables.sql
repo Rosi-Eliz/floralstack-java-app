@@ -37,6 +37,38 @@ CREATE TABLE plant
     FOREIGN KEY (owner_id) REFERENCES "USER" (id) ON DELETE CASCADE
 );
 
+CREATE TABLE sensor
+(
+    id INTEGER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) NOT NULL,
+    name VARCHAR2(30) NOT NULL,
+    description VARCHAR2(100),
+    priority VARCHAR2(30),
+    output_identifier VARCHAR2(30) UNIQUE,
+    CHECK (REGEXP_LIKE(output_identifier,'(an([1-9][0-9]?|100)M([1-9][0-9]?|100)$)|(di([1-9][0-9]?|100)$)')),
+    unit_of_measurement VARCHAR(30) NOT NULL,
+    last_measurement_value NUMBER,
+    threshold_type VARCHAR(30),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE calibrated_sensor
+(
+    id                   INTEGER,
+    max_value            NUMERIC(6, 4),
+    min_value            NUMERIC(6, 4),
+    percentage_threshold NUMERIC(3, 2) CHECK (percentage_threshold BETWEEN 0 AND 100),
+    PRIMARY KEY (id),
+    FOREIGN KEY (id) REFERENCES sensor (id) ON DELETE CASCADE
+);
+
+CREATE TABLE static_sensor
+(
+    id INTEGER,
+    threshold_offset NUMERIC(6,4) DEFAULT 0.0,
+    PRIMARY KEY (id),
+    FOREIGN KEY (id) REFERENCES sensor (id) ON DELETE CASCADE
+);
+
 CREATE OR REPLACE TRIGGER user_id_trigger
     BEFORE INSERT ON "USER"
     FOR EACH ROW
