@@ -10,10 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Repository
 public class PlantDataAccessService implements PlantDataAccessServiceProvider{
@@ -117,6 +114,7 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 "ssp.description AS static_description, " +
                 "ssp.priority AS static_priority, " +
                 "ssp.output_identifier AS static_output_identifier, " +
+                "ssp.last_measurement_value AS static_last_measurement_value, " +
                 "ssp.unit_of_measurement AS static_unit_of_measurement, " +
                 "ssp.threshold_type AS static_threshold_type, " +
                 "ss.threshold_offset AS threshold_offset " +
@@ -134,7 +132,7 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 "LEFT JOIN " +
                 "static_sensor ss ON " +
                 "pss.static_sensor_id = ss.id " +
-                "INNER JOIN " +
+                "LEFT JOIN " +
                 "sensor ssp ON " +
                 "ss.id = ssp.id " +
                 "" +
@@ -144,11 +142,11 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 "LEFT JOIN " +
                 "calibrated_sensor cs ON " +
                 "pcs.calibrated_sensor_id = cs.id " +
-                "INNER JOIN " +
+                "LEFT JOIN " +
                 "sensor csp ON " +
                 "cs.id = csp.id ";
 
-        return jdbcTemplateHelper.query(query, plantRowMapper());
+        return jdbcTemplateHelper.query(query, plantResultSetExtractor());
     }
 
     @Override
@@ -232,13 +230,16 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
         return rowMapper;
     }
 
-    ResultSetExtractor<Plant> plantResultSetExtractor()
+    ResultSetExtractor<List<Plant>> plantResultSetExtractor()
     {
-        ResultSetExtractor<Plant> resultSetExtractor = (resultSet) -> {
+        ResultSetExtractor<List<Plant>> resultSetExtractor = (resultSet) -> {
             List<StaticSensor> staticSensors = new ArrayList<>();
-            Plant plant = null;
+            Map<Integer, Plant> plants = new HashMap<>();
             while(resultSet.next()) {
-                if (plant == null) {
+                Integer plantId = resultSet.getInt("plant_id");
+                Plant plant = plants.get(plantId);
+                if (plantId != null && plant == null) {
+                    staticSensors = new ArrayList<>();
                     Integer userId = resultSet.getInt("user_id");
                     userId = resultSet.wasNull() ? null : userId;
                     User owner = null;
@@ -273,6 +274,7 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                             owner,
                             null,
                             creationDate);
+                    plants.put(plantId, plant);
                 }
                 Integer staticSensorId = resultSet.getInt("static_sensor_id");
                 if(!resultSet.wasNull())
@@ -295,10 +297,10 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                             thresholdOffset
                     );
                     staticSensors.add(staticSensor);
+                    plant.setStaticSensorsList(staticSensors);
                 }
             }
-            Objects.requireNonNull(plant).setStaticSensorsList(staticSensors);
-            return plant;
+            return new ArrayList<Plant>(plants.values());
         };
         return resultSetExtractor;
     }

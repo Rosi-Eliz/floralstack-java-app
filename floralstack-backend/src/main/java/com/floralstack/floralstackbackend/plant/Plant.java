@@ -23,9 +23,9 @@ public class Plant {
     public Plant(@JsonProperty("id") Integer id,
                  @JsonProperty("name") String name,
                  @JsonProperty("description") String description,
-                 Environment environment,
-                 User owner,
-                 List<StaticSensor> staticSensorsList,
+                 @JsonProperty("environment") Environment environment,
+                 @JsonProperty("owner") User owner,
+                 @JsonProperty("static_sensors_list") List<StaticSensor> staticSensorsList,
                  @JsonProperty("creation_date") Date creationDate) {
         this.id = id;
         this.name = name;

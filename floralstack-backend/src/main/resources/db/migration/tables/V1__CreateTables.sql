@@ -74,8 +74,8 @@ CREATE TABLE static_sensor
 
 CREATE TABLE plant_static_sensor
 (
-    plant_id  INTEGER UNIQUE,
-    static_sensor_id INTEGER UNIQUE,
+    plant_id  INTEGER,
+    static_sensor_id INTEGER,
     PRIMARY KEY (plant_id, static_sensor_id),
     FOREIGN KEY (plant_id) REFERENCES plant (id),
     FOREIGN KEY (static_sensor_id) REFERENCES static_sensor (id)
@@ -83,8 +83,8 @@ CREATE TABLE plant_static_sensor
 
 CREATE TABLE plant_calibrated_sensor
 (
-    plant_id  INTEGER UNIQUE,
-    calibrated_sensor_id INTEGER UNIQUE,
+    plant_id  INTEGER,
+    calibrated_sensor_id INTEGER,
     PRIMARY KEY (plant_id, calibrated_sensor_id),
     FOREIGN KEY (plant_id) REFERENCES plant (id),
     FOREIGN KEY (calibrated_sensor_id) REFERENCES calibrated_sensor (id)

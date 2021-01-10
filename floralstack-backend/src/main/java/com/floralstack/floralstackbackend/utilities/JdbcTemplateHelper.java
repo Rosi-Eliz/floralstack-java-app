@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.lang.Nullable;
@@ -53,6 +54,13 @@ public class JdbcTemplateHelper {
     public <T> List<T> query(String sql, RowMapper<T> rowMapper, @Nullable Object... args)  {
         JdbcValidator<List<T>> block = () -> {
             return jdbcTemplate.query(sql, rowMapper, args);
+        };
+        return validate(block);
+    }
+
+    public <T> T query(String sql, ResultSetExtractor<T> resultSetExtractor, @Nullable Object... args)  {
+        JdbcValidator<T> block = () -> {
+            return jdbcTemplate.query(sql, resultSetExtractor, args);
         };
         return validate(block);
     }
