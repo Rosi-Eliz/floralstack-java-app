@@ -2,11 +2,13 @@ package com.floralstack.floralstackbackend.plant;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.floralstack.floralstackbackend.environment.Environment;
+import com.floralstack.floralstackbackend.sensor.StaticSensor;
 import com.floralstack.floralstackbackend.user.User;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Plant {
     private final Integer id;
@@ -15,6 +17,7 @@ public class Plant {
     private final String description;
     private final Environment environment;
     private final User owner;
+    private List<StaticSensor> staticSensorsList;
     private final Date creationDate;
 
     public Plant(@JsonProperty("id") Integer id,
@@ -22,12 +25,14 @@ public class Plant {
                  @JsonProperty("description") String description,
                  Environment environment,
                  User owner,
+                 List<StaticSensor> staticSensorsList,
                  @JsonProperty("creation_date") Date creationDate) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.environment = environment;
         this.owner = owner;
+        this.staticSensorsList = staticSensorsList;
         this.creationDate = creationDate;
     }
 
@@ -53,5 +58,14 @@ public class Plant {
 
     public Date getCreationDate() {
         return creationDate;
+    }
+
+    public List<StaticSensor> getStaticSensorsList() {
+        return staticSensorsList;
+    }
+
+    public void setStaticSensorsList(List<StaticSensor> staticSensorsList)
+    {
+        this.staticSensorsList = new ArrayList<>(staticSensorsList);
     }
 }

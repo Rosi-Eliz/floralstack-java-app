@@ -107,6 +107,31 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
                 "ON sensor.id = static_sensor.id";
         return jdbcTemplateHelper.query(query, staticSensorRowMapper());
     }
+
+    @Override
+    public StaticSensor getStaticSensor(Integer id) {
+        String query = "" +
+                "SELECT sensor.id," +
+                "name, " +
+                "description, " +
+                "priority, " +
+                "output_identifier, " +
+                "unit_of_measurement, " +
+                "last_measurement_value, " +
+                "threshold_type, " +
+                "static_sensor.threshold_offset " +
+                "FROM sensor INNER JOIN static_sensor " +
+                "ON sensor.id = static_sensor.id " +
+                "WHERE sensor.id = ?";
+
+        return jdbcTemplateHelper.queryForObject(query, staticSensorRowMapper(), id);
+    }
+
+    @Override
+    public void updateStaticSensor(StaticSensor sensor) {
+        String query = "" +
+                "UPDATE static_sensor ";
+    }
     // MAPPERS
 
     private RowMapper<StaticSensor> staticSensorRowMapper() {

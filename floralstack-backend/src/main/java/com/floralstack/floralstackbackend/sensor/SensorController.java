@@ -1,5 +1,6 @@
 package com.floralstack.floralstackbackend.sensor;
 
+import com.floralstack.floralstackbackend.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +21,18 @@ public class SensorController {
     void createStaticSensor(@RequestBody @Valid StaticSensor staticSensor){
         sensorService.createStaticSensor(staticSensor);
     }
-
     @GetMapping("static")
     List<StaticSensor> getAllStaticSensors(){
         return sensorService.getAllStaticSensors();
+    }
+
+    @GetMapping("static/{id}")
+    StaticSensor getStaticSensor(@PathVariable("id") Integer id) {
+        return sensorService.getStaticSensor(id);
+    }
+
+    @PutMapping
+    public void updateSensor(@RequestBody @Valid StaticSensor sensor){
+        sensorService.updateSensor(sensor);
     }
 }

@@ -32,4 +32,12 @@ public class SensorService {
     public List<StaticSensor> getAllStaticSensors() {
         return sensorDataAccessService.getAllStaticSensors();
     }
+
+    public StaticSensor getStaticSensor(Integer id) {
+        return sensorDataAccessService.getStaticSensor(id);
+    }
+
+    public void updateSensor(StaticSensor sensor) {
+        sensorDataAccessService.updateStaticSensor(sensor);
+    }
 }

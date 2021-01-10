@@ -50,9 +50,9 @@ public class JdbcTemplateHelper {
         return validate(block);
     }
 
-    public <T> List<T> query(String sql, RowMapper<T> rowMapper)  {
+    public <T> List<T> query(String sql, RowMapper<T> rowMapper, @Nullable Object... args)  {
         JdbcValidator<List<T>> block = () -> {
-            return jdbcTemplate.query(sql, rowMapper);
+            return jdbcTemplate.query(sql, rowMapper, args);
         };
         return validate(block);
     }

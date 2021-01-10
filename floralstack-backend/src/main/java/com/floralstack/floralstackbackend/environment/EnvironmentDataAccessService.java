@@ -1,5 +1,5 @@
 package com.floralstack.floralstackbackend.environment;
-import com.floralstack.floralstackbackend.user.User;
+import com.floralstack.floralstackbackend.utilities.JdbcTemplateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,11 +10,11 @@ import java.util.List;
 
 @Repository
 public class EnvironmentDataAccessService implements EnvironmentDataAccessServiceProvider{
-    private final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplateHelper jdbcTemplateHelper;
 
     @Autowired
-    public EnvironmentDataAccessService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public EnvironmentDataAccessService(JdbcTemplateHelper jdbcTemplateHelper) {
+        this.jdbcTemplateHelper = jdbcTemplateHelper;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class EnvironmentDataAccessService implements EnvironmentDataAccessServic
                 "description) " +
                 "VALUES(?, ?)";
 
-        return jdbcTemplate.update(
+        return jdbcTemplateHelper.update(
                 query,
                 environment.getName(),
                 environment.getDescription()
@@ -38,7 +38,7 @@ public class EnvironmentDataAccessService implements EnvironmentDataAccessServic
                 "SELECT * FROM environment " +
                 "WHERE environment.id = ?";
 
-        return jdbcTemplate.queryForObject(query, mapEnvironment(), id);
+        return jdbcTemplateHelper.queryForObject(query, mapEnvironment(), id);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class EnvironmentDataAccessService implements EnvironmentDataAccessServic
         String query = "" +
                 "SELECT * FROM environment";
 
-        return jdbcTemplate.query(query, mapEnvironment());
+        return jdbcTemplateHelper.query(query, mapEnvironment());
     }
 
     @Override
@@ -57,7 +57,7 @@ public class EnvironmentDataAccessService implements EnvironmentDataAccessServic
                 "description = ? " +
                 "WHERE environment.id = ?";
 
-        return jdbcTemplate.update(
+        return jdbcTemplateHelper.update(
                 query,
                 environment.getName(),
                 environment.getDescription(),
@@ -70,7 +70,7 @@ public class EnvironmentDataAccessService implements EnvironmentDataAccessServic
                 "DELETE FROM environment " +
                 "WHERE environment.id = ?";
 
-        return jdbcTemplate.update(query, id);
+        return jdbcTemplateHelper.update(query, id);
     }
 
     // MAPPERS

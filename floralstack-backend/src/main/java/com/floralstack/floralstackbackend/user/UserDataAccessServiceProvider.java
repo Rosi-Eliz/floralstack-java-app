@@ -1,5 +1,7 @@
 package com.floralstack.floralstackbackend.user;
 
+import com.floralstack.floralstackbackend.sensor.StaticSensor;
+
 import java.util.List;
 
 public interface UserDataAccessServiceProvider {

@@ -1,5 +1,6 @@
 package com.floralstack.floralstackbackend.plant;
 
+import com.floralstack.floralstackbackend.commons.IdentityRequestModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,5 +49,10 @@ public class PlantController {
     @DeleteMapping(path = "{id}")
     public void deletePlant(@PathVariable("id") Integer id) {
         plantService.deletePlant(id);
+    }
+
+    @PostMapping(path = "{id}/attach_static_sensor")
+    public void attachStaticSensor(@PathVariable("id") Integer id, @RequestBody @Valid IdentityRequestModel identityRequestModel){
+        plantService.attachStaticSensor(id, identityRequestModel.getId());
     }
 }

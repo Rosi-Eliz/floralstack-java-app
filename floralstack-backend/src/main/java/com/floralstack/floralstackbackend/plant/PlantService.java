@@ -48,4 +48,8 @@ public class PlantService {
             throw ApiRequestExceptionFactory.failedDeleteException;
         }
     }
+
+    public void attachStaticSensor(Integer plantId, Integer staticSensorId) {
+        plantDataAccessServiceProvider.attachStaticSensor(plantId, staticSensorId);
+    }
 }

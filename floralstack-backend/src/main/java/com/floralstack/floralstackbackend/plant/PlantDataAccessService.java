@@ -1,27 +1,26 @@
 package com.floralstack.floralstackbackend.plant;
 
 import com.floralstack.floralstackbackend.environment.Environment;
+import com.floralstack.floralstackbackend.sensor.StaticSensor;
 import com.floralstack.floralstackbackend.user.User;
+import com.floralstack.floralstackbackend.utilities.JdbcTemplateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCallback;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.validation.Valid;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 public class PlantDataAccessService implements PlantDataAccessServiceProvider{
-    private final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplateHelper jdbcTemplateHelper;
     @Autowired
-    public PlantDataAccessService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public PlantDataAccessService(JdbcTemplateHelper jdbcTemplateHelper) {
+        this.jdbcTemplateHelper = jdbcTemplateHelper;
     }
 
     @Override
@@ -34,7 +33,7 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 " creation_date) " +
                 "VALUES (?, ?, ?)";
 
-        return jdbcTemplate.update(
+        return jdbcTemplateHelper.update(
                 query,
                 plant.getName(),
                 plant.getDescription(),
@@ -68,7 +67,7 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 "p.environment_id = e.id " +
                 "WHERE p.id = ?";
 
-        return jdbcTemplate.queryForObject(query, plantRowMapper(), id);
+        return jdbcTemplateHelper.queryForObject(query, plantRowMapper(), id);
     }
 
     @Override
@@ -84,7 +83,7 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 "FROM plant " +
                 "WHERE " +
                 "owner_id = ?";
-        return jdbcTemplate.query(query, plantRowMapper(), id);
+        return jdbcTemplateHelper.query(query, plantRowMapper(), id);
     }
 
 
@@ -93,7 +92,7 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
         String query = "" +
                 "SELECT * FROM plant" +
                 "WHERE environment_id = ?";
-        return jdbcTemplate.query(query, plantRowMapper(), id);
+        return jdbcTemplateHelper.query(query, plantRowMapper(), id);
     }
 
     @Override
@@ -112,15 +111,44 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 "u.email, " +
                 "e.id AS environment_id, " +
                 "e.name AS environment_name, " +
-                "e.description AS environment_description " +
+                "e.description AS environment_description, " +
+                "ssp.id AS static_sensor_id, " +
+                "ssp.name AS static_name, " +
+                "ssp.description AS static_description, " +
+                "ssp.priority AS static_priority, " +
+                "ssp.output_identifier AS static_output_identifier, " +
+                "ssp.unit_of_measurement AS static_unit_of_measurement, " +
+                "ssp.threshold_type AS static_threshold_type, " +
+                "ss.threshold_offset AS threshold_offset " +
                 "FROM plant p " +
                 "LEFT JOIN " +
                 "\"USER\" u ON " +
                 "p.owner_id = u.id " +
                 "LEFT JOIN " +
                 "environment e ON " +
-                "p.environment_id = e.id";
-        return jdbcTemplate.query(query, plantRowMapper());
+                "p.environment_id = e.id " +
+                "" +
+                "LEFT JOIN " +
+                "plant_static_sensor pss ON " +
+                "p.id = pss.plant_id " +
+                "LEFT JOIN " +
+                "static_sensor ss ON " +
+                "pss.static_sensor_id = ss.id " +
+                "INNER JOIN " +
+                "sensor ssp ON " +
+                "ss.id = ssp.id " +
+                "" +
+                "LEFT JOIN " +
+                "plant_calibrated_sensor pcs ON " +
+                "p.id = pcs.plant_id " +
+                "LEFT JOIN " +
+                "calibrated_sensor cs ON " +
+                "pcs.calibrated_sensor_id = cs.id " +
+                "INNER JOIN " +
+                "sensor csp ON " +
+                "cs.id = csp.id ";
+
+        return jdbcTemplateHelper.query(query, plantRowMapper());
     }
 
     @Override
@@ -132,7 +160,7 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 "creation_date = ? " +
                 "WHERE id = ?";
 
-        return jdbcTemplate.update(
+        return jdbcTemplateHelper.update(
                 query,
                 plant.getName(),
                 plant.getDescription(),
@@ -145,7 +173,20 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
         String query = "" +
                 "DELETE FROM plant " +
                 "WHERE id = ?";
-        return jdbcTemplate.update(query, id);
+        return jdbcTemplateHelper.update(query, id);
+    }
+
+    @Override
+    public void attachStaticSensor(Integer plantId, Integer staticSensorId) {
+        String query = "" +
+                "INSERT INTO plant_static_sensor " +
+                "(plant_id, static_sensor_id) " +
+                "SELECT ?, ? " +
+                "FROM DUAL " +
+                "WHERE NOT EXISTS " +
+                "(SELECT * FROM plant_static_sensor " +
+                "WHERE plant_id = ? AND static_sensor_id = ?)" ;
+        jdbcTemplateHelper.update(query, plantId, staticSensorId, plantId, staticSensorId);
     }
 
     // Mappers
@@ -184,9 +225,81 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                     description,
                     environment,
                     owner,
+                    null,
                     creationDate);
             return plant;
         };
         return rowMapper;
+    }
+
+    ResultSetExtractor<Plant> plantResultSetExtractor()
+    {
+        ResultSetExtractor<Plant> resultSetExtractor = (resultSet) -> {
+            List<StaticSensor> staticSensors = new ArrayList<>();
+            Plant plant = null;
+            while(resultSet.next()) {
+                if (plant == null) {
+                    Integer userId = resultSet.getInt("user_id");
+                    userId = resultSet.wasNull() ? null : userId;
+                    User owner = null;
+                    if (userId != null) {
+                        owner = new User(resultSet.getInt("user_id"),
+                                resultSet.getString("first_name"),
+                                resultSet.getString("last_name"),
+                                resultSet.getDate("birth_date"),
+                                resultSet.getString("user_role"),
+                                resultSet.getString("email"),
+                                null);
+                    }
+
+                    String environmentDescription = resultSet.getString("environment_description");
+                    environmentDescription = resultSet.wasNull() ? null : environmentDescription;
+                    Integer environmentId = resultSet.getInt("environment_id");
+                    environmentId = resultSet.wasNull() ? null : environmentId;
+                    Environment environment = null;
+                    if (environmentId != null) {
+                        environment = new Environment(environmentId,
+                                resultSet.getString("environment_name"),
+                                environmentDescription);
+                    }
+
+                    String description = resultSet.getString("plant_description");
+                    description = resultSet.wasNull() ? null : description;
+                    Date creationDate = resultSet.getDate("plant_creation_date");
+                    plant = new Plant(resultSet.getInt("plant_id"),
+                            resultSet.getString("plant_name"),
+                            description,
+                            environment,
+                            owner,
+                            null,
+                            creationDate);
+                }
+                Integer staticSensorId = resultSet.getInt("static_sensor_id");
+                if(!resultSet.wasNull())
+                {
+                    Double lastMeasurementValue = resultSet.getDouble("static_last_measurement_value");
+                    lastMeasurementValue = resultSet.wasNull() ? null : lastMeasurementValue;
+
+                    Double thresholdOffset = resultSet.getDouble("threshold_offset");
+                    thresholdOffset = resultSet.wasNull() ? null : thresholdOffset;
+
+                    StaticSensor staticSensor = new StaticSensor(
+                            staticSensorId,
+                            resultSet.getString("static_name"),
+                            resultSet.getString("static_description"),
+                            resultSet.getString("static_priority"),
+                            resultSet.getString("static_output_identifier"),
+                            resultSet.getString("static_unit_of_measurement"),
+                            lastMeasurementValue,
+                            resultSet.getString("static_threshold_type"),
+                            thresholdOffset
+                    );
+                    staticSensors.add(staticSensor);
+                }
+            }
+            Objects.requireNonNull(plant).setStaticSensorsList(staticSensors);
+            return plant;
+        };
+        return resultSetExtractor;
     }
 }

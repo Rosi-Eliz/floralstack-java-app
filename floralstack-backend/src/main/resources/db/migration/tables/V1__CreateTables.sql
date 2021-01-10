@@ -1,3 +1,5 @@
+-- TABLES
+
 CREATE TABLE environment
 (
     id INTEGER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) NOT NULL,
@@ -7,8 +9,9 @@ CREATE TABLE environment
 );
 
 CREATE SEQUENCE user_IDs
-    START WITH 1
+    START WITH 0
     INCREMENT BY 1
+    MINVALUE 0
     MAXVALUE 100000
     NOCYCLE;
 
@@ -69,9 +72,20 @@ CREATE TABLE static_sensor
     FOREIGN KEY (id) REFERENCES sensor (id) ON DELETE CASCADE
 );
 
-CREATE OR REPLACE TRIGGER user_id_trigger
-    BEFORE INSERT ON "USER"
-    FOR EACH ROW
-BEGIN
-    :new.id := user_IDs.nextval;
-END;
+CREATE TABLE plant_static_sensor
+(
+    plant_id  INTEGER UNIQUE,
+    static_sensor_id INTEGER UNIQUE,
+    PRIMARY KEY (plant_id, static_sensor_id),
+    FOREIGN KEY (plant_id) REFERENCES plant (id),
+    FOREIGN KEY (static_sensor_id) REFERENCES static_sensor (id)
+);
+
+CREATE TABLE plant_calibrated_sensor
+(
+    plant_id  INTEGER UNIQUE,
+    calibrated_sensor_id INTEGER UNIQUE,
+    PRIMARY KEY (plant_id, calibrated_sensor_id),
+    FOREIGN KEY (plant_id) REFERENCES plant (id),
+    FOREIGN KEY (calibrated_sensor_id) REFERENCES calibrated_sensor (id)
+);
