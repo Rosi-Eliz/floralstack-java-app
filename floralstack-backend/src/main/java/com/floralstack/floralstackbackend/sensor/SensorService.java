@@ -15,6 +15,8 @@ public class SensorService {
         this.sensorDataAccessService = sensorDataAccessService;
     }
 
+    //Static sensor methods:
+
     public void createStaticSensor(StaticSensor staticSensor) {
         SensorDataAccessService.CreateSensorResult result = sensorDataAccessService.createSensor(staticSensor);
         if(result.getQueryResult() == 0)
@@ -37,7 +39,44 @@ public class SensorService {
         return sensorDataAccessService.getStaticSensor(id);
     }
 
-    public void updateSensor(StaticSensor sensor) {
-        sensorDataAccessService.updateStaticSensor(sensor);
+    //Calibrated sensor methods
+
+    public void createCalibratedSensor(CalibratedSensor calibratedSensor) {
+        SensorDataAccessService.CreateSensorResult result = sensorDataAccessService.createSensor(calibratedSensor);
+        if(result.getQueryResult() == 0)
+        {
+            throw ApiRequestExceptionFactory.failedCreationException;
+        }
+        calibratedSensor.setId(result.getCreatedSensorId());
+        Integer insertion = sensorDataAccessService.createCalibratedSensor(calibratedSensor);
+        if(insertion == 0)
+        {
+            throw ApiRequestExceptionFactory.failedCreationException;
+        }
+    }
+
+    public List<CalibratedSensor> getAllCalibratedSensors() {
+        return sensorDataAccessService.getAllCalibratedSensors();
+    }
+
+    public CalibratedSensor getCalibratedSensor(Integer id) {
+        return sensorDataAccessService.getCalibratedSensor(id);
+    }
+    //Common methods
+    public void updateSensor(Sensor sensor) {
+        if (sensor.getId() == null) {
+            throw ApiRequestExceptionFactory.missingIdException;
+        }
+        Integer update = sensorDataAccessService.updateSensor(sensor);
+        if (update == 0) {
+            throw ApiRequestExceptionFactory.failedUpdateException;
+        }
+    }
+
+    public void deleteSensor(Integer id) {
+        Integer delete = sensorDataAccessService.deleteSensor(id);
+        if (delete == 0) {
+            throw ApiRequestExceptionFactory.failedDeleteException;
+        }
     }
 }

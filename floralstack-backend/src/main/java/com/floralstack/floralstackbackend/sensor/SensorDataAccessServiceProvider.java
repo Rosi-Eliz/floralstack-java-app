@@ -7,5 +7,9 @@ public interface SensorDataAccessServiceProvider {
     Integer createStaticSensor(StaticSensor staticSensor);
     List<StaticSensor> getAllStaticSensors();
     StaticSensor getStaticSensor(Integer id);
-    void updateStaticSensor(StaticSensor sensor);
+    Integer updateSensor(Sensor sensor);
+    Integer deleteSensor(Integer id);
+    Integer createCalibratedSensor(CalibratedSensor calibratedSensor);
+    List<CalibratedSensor> getAllCalibratedSensors();
+    CalibratedSensor getCalibratedSensor(Integer id);
 }

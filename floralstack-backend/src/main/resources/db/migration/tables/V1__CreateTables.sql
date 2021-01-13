@@ -43,7 +43,7 @@ CREATE TABLE plant
 CREATE TABLE sensor
 (
     id INTEGER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) NOT NULL,
-    name VARCHAR2(30) NOT NULL,
+    name VARCHAR2(100) NOT NULL,
     description VARCHAR2(100),
     priority VARCHAR2(30),
     output_identifier VARCHAR2(30) UNIQUE,
@@ -57,9 +57,9 @@ CREATE TABLE sensor
 CREATE TABLE calibrated_sensor
 (
     id                   INTEGER,
-    max_value            NUMERIC(6, 4),
-    min_value            NUMERIC(6, 4),
-    percentage_threshold NUMERIC(3, 2) CHECK (percentage_threshold BETWEEN 0 AND 100),
+    max_value            NUMBER,
+    min_value            NUMBER,
+    percentage_threshold NUMBER CHECK (percentage_threshold BETWEEN 0 AND 100),
     PRIMARY KEY (id),
     FOREIGN KEY (id) REFERENCES sensor (id) ON DELETE CASCADE
 );
@@ -67,7 +67,7 @@ CREATE TABLE calibrated_sensor
 CREATE TABLE static_sensor
 (
     id INTEGER,
-    threshold_offset NUMERIC(6,4) DEFAULT 0.0,
+    threshold_offset NUMBER DEFAULT 0.0,
     PRIMARY KEY (id),
     FOREIGN KEY (id) REFERENCES sensor (id) ON DELETE CASCADE
 );
@@ -78,7 +78,7 @@ CREATE TABLE plant_static_sensor
     static_sensor_id INTEGER,
     PRIMARY KEY (plant_id, static_sensor_id),
     FOREIGN KEY (plant_id) REFERENCES plant (id),
-    FOREIGN KEY (static_sensor_id) REFERENCES static_sensor (id)
+    FOREIGN KEY (static_sensor_id) REFERENCES static_sensor (id) ON DELETE CASCADE
 );
 
 CREATE TABLE plant_calibrated_sensor
@@ -87,5 +87,5 @@ CREATE TABLE plant_calibrated_sensor
     calibrated_sensor_id INTEGER,
     PRIMARY KEY (plant_id, calibrated_sensor_id),
     FOREIGN KEY (plant_id) REFERENCES plant (id),
-    FOREIGN KEY (calibrated_sensor_id) REFERENCES calibrated_sensor (id)
+    FOREIGN KEY (calibrated_sensor_id) REFERENCES calibrated_sensor (id) ON DELETE CASCADE
 );

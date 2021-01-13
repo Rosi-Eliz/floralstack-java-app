@@ -128,9 +128,126 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
     }
 
     @Override
-    public void updateStaticSensor(StaticSensor sensor) {
+    public Integer updateSensor(Sensor sensor) {
+        String sensorUpdateQuery = "" +
+                "UPDATE sensor " +
+                "SET name = ?, " +
+                "description = ?, " +
+                "priority = ?, " +
+                "output_identifier = ?, " +
+                "unit_of_measurement = ?, " +
+                "last_measurement_value = ?, "+
+                "threshold_type = ? " +
+                "WHERE id = ?";
+
+        Integer sensorUpdate = jdbcTemplateHelper.update(
+                sensorUpdateQuery,
+                sensor.getName(),
+                sensor.getDescription(),
+                sensor.getPriority(),
+                sensor.getOutputIdentifier(),
+                sensor.getUnitOfMeasurement(),
+                sensor.getLastMeasurementValue(),
+                sensor.getThresholdType(),
+                sensor.getId());
+        if(sensorUpdate == 0) {
+            return sensorUpdate;
+        }
+
+        String staticSensorUpdateQuery = "" +
+                "UPDATE static_sensor " +
+                "SET threshold_offset = ? " +
+                "WHERE id = ?";
+
+        String calibratedSensorUpdateQuery = "" +
+                "UPDATE calibrated_sensor " +
+                "SET max_value = ?, " +
+                "min_value = ?, " +
+                "percentage_threshold = ? " +
+                "WHERE id = ?";
+
+        if(sensor.getClass().equals(StaticSensor.class))
+        {
+            return jdbcTemplateHelper.update(
+                    staticSensorUpdateQuery,
+                    ((StaticSensor) sensor).getThresholdOffset(),
+                    sensor.getId());
+        }
+        else if(sensor.getClass().equals(CalibratedSensor.class))
+        {
+            return jdbcTemplateHelper.update(
+                    calibratedSensorUpdateQuery,
+                    ((CalibratedSensor) sensor).getMaxValue(),
+                    ((CalibratedSensor) sensor).getMinValue(),
+                    ((CalibratedSensor) sensor).getPercentageThreshold(),
+                    sensor.getId());
+        }
+        return 0;
+    }
+
+    @Override
+    public Integer deleteSensor(Integer id) {
         String query = "" +
-                "UPDATE static_sensor ";
+                "DELETE FROM sensor " +
+                "WHERE id = ?";
+
+        return jdbcTemplateHelper.update(query, id);
+    }
+
+    @Override
+    public Integer createCalibratedSensor(CalibratedSensor calibratedSensor) {
+        String query = "" +
+                "INSERT INTO calibrated_sensor " +
+                "(id, " +
+                "max_value, " +
+                "min_value," +
+                "percentage_threshold) " +
+                "VALUES (?, ?, ?, ?)";
+
+        return jdbcTemplateHelper.update(query,
+                calibratedSensor.getId(),
+                calibratedSensor.getMaxValue(),
+                calibratedSensor.getMinValue(),
+                calibratedSensor.getPercentageThreshold());
+    }
+
+    @Override
+    public List<CalibratedSensor> getAllCalibratedSensors() {
+        String query = "" +
+                "SELECT sensor.id," +
+                "name, " +
+                "description, " +
+                "priority, " +
+                "output_identifier, " +
+                "unit_of_measurement, " +
+                "last_measurement_value, " +
+                "threshold_type, " +
+                "calibrated_sensor.max_value, " +
+                "calibrated_sensor.min_value," +
+                "calibrated_sensor.percentage_threshold " +
+                "FROM sensor INNER JOIN calibrated_sensor " +
+                "ON sensor.id = calibrated_sensor.id";
+        return jdbcTemplateHelper.query(query, calibratedSensorRowMapper());
+    }
+
+    @Override
+    public CalibratedSensor getCalibratedSensor(Integer id) {
+        String query = "" +
+                "SELECT sensor.id," +
+                "name, " +
+                "description, " +
+                "priority, " +
+                "output_identifier, " +
+                "unit_of_measurement, " +
+                "last_measurement_value, " +
+                "threshold_type, " +
+                "calibrated_sensor.max_value, " +
+                "calibrated_sensor.min_value," +
+                "calibrated_sensor.threshold_type " +
+                "FROM sensor INNER JOIN calibrated_sensor " +
+                "WHERE sensor.id = ?";
+
+        return jdbcTemplateHelper.queryForObject(query, calibratedSensorRowMapper(), id);
     }
     // MAPPERS
 
@@ -153,6 +270,38 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
                     lastMeasurementValue,
                     resultSet.getString("threshold_type"),
                     thresholdOffset);
+            return sensor;
+        };
+        return rowMapper;
+    }
+
+    private RowMapper<CalibratedSensor> calibratedSensorRowMapper() {
+        RowMapper<CalibratedSensor> rowMapper = (resultSet, i) -> {
+
+            Double lastMeasurementValue = resultSet.getDouble("last_measurement_value");
+            lastMeasurementValue = resultSet.wasNull() ? null : lastMeasurementValue;
+
+            Double maxValue = resultSet.getDouble("max_value");
+            maxValue = resultSet.wasNull() ? null : maxValue;
+
+            Double minValue = resultSet.getDouble("min_value");
+            minValue = resultSet.wasNull() ? null : minValue;
+
+            Double percentageThreshold = resultSet.getDouble("percentage_threshold");
+            percentageThreshold = resultSet.wasNull() ? null : percentageThreshold;
+
+            CalibratedSensor sensor =  new CalibratedSensor(
+                    resultSet.getInt("id"),
+                    resultSet.getString("name"),
+                    resultSet.getString("description"),
+                    resultSet.getString("priority"),
+                    resultSet.getString("output_identifier"),
+                    resultSet.getString("unit_of_measurement"),
+                    lastMeasurementValue,
+                    resultSet.getString("threshold_type"),
+                    maxValue,
+                    minValue,
+                    percentageThreshold);
             return sensor;
         };
         return rowMapper;

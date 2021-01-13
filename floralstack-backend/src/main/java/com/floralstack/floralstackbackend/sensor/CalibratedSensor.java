@@ -3,26 +3,27 @@ package com.floralstack.floralstackbackend.sensor;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class CalibratedSensor extends Sensor{
-    @NotBlank
+    @NotNull
     Double maxValue;
-    @NotBlank
+    @NotNull
     Double minValue;
-    @NotBlank
+    @NotNull
     Double percentageThreshold;
 
     public CalibratedSensor(@JsonProperty("id") Integer id,
                             @JsonProperty("name") @NotBlank String name,
                             @JsonProperty("description") String description,
                             @JsonProperty("priority") @NotBlank String priority,
-                            @JsonProperty("output_identifer") @NotBlank String outputIdentifier,
+                            @JsonProperty("output_identifier") @NotBlank String outputIdentifier,
                             @JsonProperty("unit_of_measurement") @NotBlank String unitOfMeasurement,
                             @JsonProperty("last_measurement_value") Double lastMeasurementValue,
                             @JsonProperty("threshold_type") @NotBlank String thresholdType,
-                            @JsonProperty("max_value") @NotBlank Double maxValue,
-                            @JsonProperty("min_value") @NotBlank Double minValue,
-                            @JsonProperty("percentage_threshold") @NotBlank Double percentageThreshold) {
+                            @JsonProperty("max_value") @NotNull Double maxValue,
+                            @JsonProperty("min_value") @NotNull Double minValue,
+                            @JsonProperty("percentage_threshold") @NotNull Double percentageThreshold) {
         super(id, name, description, priority, outputIdentifier, unitOfMeasurement, lastMeasurementValue, thresholdType);
         this.maxValue = maxValue;
         this.minValue = minValue;

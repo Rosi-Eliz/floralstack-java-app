@@ -17,6 +17,7 @@ public class SensorController {
         this.sensorService = sensorService;
     }
 
+    //Static sensor methods
     @PostMapping("static")
     void createStaticSensor(@RequestBody @Valid StaticSensor staticSensor){
         sensorService.createStaticSensor(staticSensor);
@@ -31,8 +32,34 @@ public class SensorController {
         return sensorService.getStaticSensor(id);
     }
 
-    @PutMapping
+    //Calibrated sensor methods
+    @PostMapping("calibrated")
+    void createCalibratedSensor(@RequestBody @Valid CalibratedSensor calibratedSensor){
+        sensorService.createCalibratedSensor(calibratedSensor);
+    }
+    @GetMapping("calibrated")
+    List<CalibratedSensor> getAllCalibratedSensors(){
+        return sensorService.getAllCalibratedSensors();
+    }
+
+    @GetMapping("calibrated/{id}")
+    CalibratedSensor getCalibratedSensor(@PathVariable("id") Integer id) {
+        return sensorService.getCalibratedSensor(id);
+    }
+
+    //Common methods
+    @PutMapping("static")
     public void updateSensor(@RequestBody @Valid StaticSensor sensor){
         sensorService.updateSensor(sensor);
+    }
+
+    @PutMapping("calibrated")
+    public void updateSensor(@RequestBody @Valid CalibratedSensor sensor){
+        sensorService.updateSensor(sensor);
+    }
+
+    @DeleteMapping(path = "{id}")
+    public void deleteSensor(@PathVariable("id") Integer id) {
+        sensorService.deleteSensor(id);
     }
 }

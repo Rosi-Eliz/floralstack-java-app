@@ -2,6 +2,7 @@ package com.floralstack.floralstackbackend.plant;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.floralstack.floralstackbackend.environment.Environment;
+import com.floralstack.floralstackbackend.sensor.CalibratedSensor;
 import com.floralstack.floralstackbackend.sensor.StaticSensor;
 import com.floralstack.floralstackbackend.user.User;
 
@@ -18,6 +19,7 @@ public class Plant {
     private final Environment environment;
     private final User owner;
     private List<StaticSensor> staticSensorsList;
+    private List<CalibratedSensor> calibratedSensorsList;
     private final Date creationDate;
 
     public Plant(@JsonProperty("id") Integer id,
@@ -64,8 +66,16 @@ public class Plant {
         return staticSensorsList;
     }
 
+    public List<CalibratedSensor> getCalibratedSensorsList() {
+        return calibratedSensorsList;
+    }
+
     public void setStaticSensorsList(List<StaticSensor> staticSensorsList)
     {
         this.staticSensorsList = new ArrayList<>(staticSensorsList);
+    }
+    public void setCalibratedSensorsList(List<CalibratedSensor> calibratedSensorsList)
+    {
+        this.calibratedSensorsList = new ArrayList<>(calibratedSensorsList);
     }
 }

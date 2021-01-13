@@ -1,6 +1,7 @@
 package com.floralstack.floralstackbackend.plant;
 
 import com.floralstack.floralstackbackend.environment.Environment;
+import com.floralstack.floralstackbackend.sensor.CalibratedSensor;
 import com.floralstack.floralstackbackend.sensor.StaticSensor;
 import com.floralstack.floralstackbackend.user.User;
 import com.floralstack.floralstackbackend.utilities.JdbcTemplateHelper;
@@ -117,7 +118,18 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 "ssp.last_measurement_value AS static_last_measurement_value, " +
                 "ssp.unit_of_measurement AS static_unit_of_measurement, " +
                 "ssp.threshold_type AS static_threshold_type, " +
-                "ss.threshold_offset AS threshold_offset " +
+                "ss.threshold_offset AS threshold_offset, " +
+                "csp.id AS calibrated_sensor_id, " +
+                "csp.name AS calibrated_name, " +
+                "csp.description AS calibrated_description, " +
+                "csp.priority AS calibrated_priority, " +
+                "csp.output_identifier AS calibrated_output_identifier, " +
+                "csp.last_measurement_value AS calibrated_last_measurement_value, " +
+                "csp.unit_of_measurement AS calibrated_unit_of_measurement, " +
+                "csp.threshold_type AS calibrated_threshold_type, " +
+                "cs.max_value AS max_value, " +
+                "cs.min_value AS min_value, " +
+                "cs.percentage_threshold AS percentage_threshold " +
                 "FROM plant p " +
                 "LEFT JOIN " +
                 "\"USER\" u ON " +
@@ -234,6 +246,7 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
     {
         ResultSetExtractor<List<Plant>> resultSetExtractor = (resultSet) -> {
             List<StaticSensor> staticSensors = new ArrayList<>();
+            List<CalibratedSensor> calibratedSensors = new ArrayList<>();
             Map<Integer, Plant> plants = new HashMap<>();
             while(resultSet.next()) {
                 Integer plantId = resultSet.getInt("plant_id");
@@ -298,6 +311,37 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                     );
                     staticSensors.add(staticSensor);
                     plant.setStaticSensorsList(staticSensors);
+                }
+
+                Integer calibratedSensorId = resultSet.getInt("calibrated_sensor_id");
+                if(!resultSet.wasNull())
+                {
+                    Double lastMeasurementValue = resultSet.getDouble("calibrated_last_measurement_value");
+                    lastMeasurementValue = resultSet.wasNull() ? null : lastMeasurementValue;
+
+                    Double maxValue = resultSet.getDouble("max_value");
+                    maxValue = resultSet.wasNull() ? null : maxValue;
+
+                    Double minValue = resultSet.getDouble("min_value");
+                    minValue = resultSet.wasNull() ? null : minValue;
+
+                    Double percentage_threshold = resultSet.getDouble("percentage_threshold");
+                    percentage_threshold = resultSet.wasNull() ? null : percentage_threshold;
+                    CalibratedSensor calibratedSensor = new CalibratedSensor(
+                            calibratedSensorId,
+                            resultSet.getString("calibrated_name"),
+                            resultSet.getString("calibrated_description"),
+                            resultSet.getString("calibrated_priority"),
+                            resultSet.getString("calibrated_output_identifier"),
+                            resultSet.getString("calibrated_unit_of_measurement"),
+                            lastMeasurementValue,
+                            resultSet.getString("calibrated_threshold_type"),
+                            maxValue,
+                            minValue,
+                            percentage_threshold
+                    );
+                    calibratedSensors.add(calibratedSensor);
+                    plant.setCalibratedSensorsList(calibratedSensors);
                 }
             }
             return new ArrayList<Plant>(plants.values());
