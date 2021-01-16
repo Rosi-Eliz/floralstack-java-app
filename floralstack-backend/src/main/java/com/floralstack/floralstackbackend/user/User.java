@@ -1,13 +1,5 @@
 package com.floralstack.floralstackbackend.user;
 
-//    id INTEGER DEFAULT ON NULL user_IDs.NEXTVAL,
-//            first_name VARCHAR2(30),
-//            last_name VARCHAR(30),
-//            birth_date DATE,
-//            user_role VARCHAR(30),
-//            email VARCHAR(40) UNIQUE,
-//            user_password VARCHAR(40) NOT NULL,
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotBlank;

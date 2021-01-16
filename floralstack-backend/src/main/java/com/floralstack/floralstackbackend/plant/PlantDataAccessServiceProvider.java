@@ -14,4 +14,6 @@ public interface PlantDataAccessServiceProvider {
     List<Plant> getAllPlants();
     Integer updatePlant(Plant plant);
     Integer deletePlant(Integer id);
+    void attachStaticSensor(Integer plantId, Integer staticSensorId);
+    void attachCalibratedSensor(Integer plantId, Integer calibratedSensorId);
 }

@@ -1,5 +1,7 @@
 package com.floralstack.floralstackbackend.user;
 
+import com.floralstack.floralstackbackend.sensor.StaticSensor;
+import com.floralstack.floralstackbackend.utilities.JdbcTemplateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,11 +12,11 @@ import java.util.List;
 
 @Repository
 public class UserDataAccessService implements UserDataAccessServiceProvider{
-    private final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplateHelper jdbcTemplateHelper;
 
     @Autowired
-    public UserDataAccessService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public UserDataAccessService(JdbcTemplateHelper jdbcTemplateHelper) {
+        this.jdbcTemplateHelper = jdbcTemplateHelper;
     }
 
     @Override
@@ -28,7 +30,7 @@ public class UserDataAccessService implements UserDataAccessServiceProvider{
                 "email, " +
                 "user_password ) " +
                 "VALUES (?, ?, ?, ?, ?, ?) ";
-        return jdbcTemplate.update(
+        return jdbcTemplateHelper.update(
                 query,
                 user.getFirstName(),
                 user.getLastName(),
@@ -47,7 +49,7 @@ public class UserDataAccessService implements UserDataAccessServiceProvider{
                 " WHERE" +
                 " \"USER\".id = ?";
 
-        return jdbcTemplate.queryForObject(query, mapUser(), id);
+        return jdbcTemplateHelper.queryForObject(query, mapUser(), id);
     }
 
     @Override
@@ -56,7 +58,7 @@ public class UserDataAccessService implements UserDataAccessServiceProvider{
                 "SELECT *" +
                 " FROM \"USER\"";
 
-        return jdbcTemplate.query(query, mapUser());
+        return jdbcTemplateHelper.query(query, mapUser());
     }
 
     @Override
@@ -70,7 +72,7 @@ public class UserDataAccessService implements UserDataAccessServiceProvider{
                 "WHERE \"USER\".id = ?";
 
 
-        return jdbcTemplate.update(
+        return jdbcTemplateHelper.update(
                 query,
                 user.getFirstName(),
                 user.getLastName(),
@@ -86,8 +88,9 @@ public class UserDataAccessService implements UserDataAccessServiceProvider{
                 "DELETE FROM \"USER\"" +
                 "WHERE \"USER\".id = ? ";
 
-        return jdbcTemplate.update(query, id);
+        return jdbcTemplateHelper.update(query, id);
     }
+
 
     // MAPPERS
 

@@ -42,10 +42,18 @@ public class PlantService {
         return plantDataAccessServiceProvider.getAllPlantsForEnvironment(id);
     }
 
-    void deletePlant(Integer id) {
+    public void deletePlant(Integer id) {
         Integer delete = plantDataAccessServiceProvider.deletePlant(id);
         if (delete == 0) {
             throw ApiRequestExceptionFactory.failedDeleteException;
         }
+    }
+
+    public void attachStaticSensor(Integer plantId, Integer staticSensorId) {
+        plantDataAccessServiceProvider.attachStaticSensor(plantId, staticSensorId);
+    }
+
+    public void attachCalibratedSensor(Integer plantId, Integer calibratedSensorId) {
+        plantDataAccessServiceProvider.attachCalibratedSensor(plantId, calibratedSensorId);
     }
 }
