@@ -1,5 +1,6 @@
 package com.floralstack.floralstackbackend.sensor;
 
+import com.floralstack.floralstackbackend.actuator.Actuator;
 import com.floralstack.floralstackbackend.environment.Environment;
 import com.floralstack.floralstackbackend.user.User;
 import com.floralstack.floralstackbackend.utilities.JdbcTemplateHelper;
@@ -56,8 +57,9 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
                 "output_identifier, " +
                 "unit_of_measurement, " +
                 "last_measurement_value, " +
-                "threshold_type) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                "threshold_type, " +
+                "actuator_id) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
         Integer insertionResult = jdbcTemplateHelper.update(new PreparedStatementCreator() {
@@ -71,6 +73,7 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
                 statement.setString(5, sensor.getUnitOfMeasurement());
                 statement.setDouble(6, sensor.getLastMeasurementValue());
                 statement.setString(7, sensor.getThresholdType());
+                statement.setInt(8, sensor.getActuator().getId());
                 return statement;
             }
         }, generatedKeyHolder);
@@ -102,6 +105,7 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
                 "unit_of_measurement, " +
                 "last_measurement_value, " +
                 "threshold_type, " +
+                "actuator_id, " +
                 "static_sensor.threshold_offset " +
                 "FROM sensor INNER JOIN static_sensor " +
                 "ON sensor.id = static_sensor.id";
@@ -119,6 +123,7 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
                 "unit_of_measurement, " +
                 "last_measurement_value, " +
                 "threshold_type, " +
+                "actuator_id, " +
                 "static_sensor.threshold_offset " +
                 "FROM sensor INNER JOIN static_sensor " +
                 "ON sensor.id = static_sensor.id " +
@@ -137,7 +142,8 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
                 "output_identifier = ?, " +
                 "unit_of_measurement = ?, " +
                 "last_measurement_value = ?, "+
-                "threshold_type = ? " +
+                "threshold_type = ?, " +
+                "actuator_id = ? " +
                 "WHERE id = ?";
 
         Integer sensorUpdate = jdbcTemplateHelper.update(
@@ -149,6 +155,7 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
                 sensor.getUnitOfMeasurement(),
                 sensor.getLastMeasurementValue(),
                 sensor.getThresholdType(),
+                sensor.getActuator().getId(),
                 sensor.getId());
         if(sensorUpdate == 0) {
             return sensorUpdate;
@@ -222,6 +229,7 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
                 "unit_of_measurement, " +
                 "last_measurement_value, " +
                 "threshold_type, " +
+                "actuator_id, " +
                 "calibrated_sensor.max_value, " +
                 "calibrated_sensor.min_value," +
                 "calibrated_sensor.percentage_threshold " +
@@ -240,7 +248,8 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
                 "output_identifier, " +
                 "unit_of_measurement, " +
                 "last_measurement_value, " +
-                "threshold_type, " +
+                "threshold_type," +
+                "actuator_id, " +
                 "calibrated_sensor.max_value, " +
                 "calibrated_sensor.min_value," +
                 "calibrated_sensor.threshold_type " +
@@ -260,6 +269,18 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
             Double thresholdOffset = resultSet.getDouble("threshold_offset");
             thresholdOffset = resultSet.wasNull() ? null : thresholdOffset;
 
+            Integer actuatorId = resultSet.getInt("actuator_id");
+            actuatorId = resultSet.wasNull() ? null : actuatorId;
+            Actuator actuator = null;
+            if(actuatorId != null) {
+                actuator = new Actuator(resultSet.getInt("id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("description"),
+                        resultSet.getString("priority"),
+                        resultSet.getString("input_identifier"));
+            }
+
+
             StaticSensor sensor =  new StaticSensor(
                     resultSet.getInt("id"),
                     resultSet.getString("name"),
@@ -269,6 +290,7 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
                     resultSet.getString("unit_of_measurement"),
                     lastMeasurementValue,
                     resultSet.getString("threshold_type"),
+                    actuator,
                     thresholdOffset);
             return sensor;
         };
@@ -290,6 +312,17 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
             Double percentageThreshold = resultSet.getDouble("percentage_threshold");
             percentageThreshold = resultSet.wasNull() ? null : percentageThreshold;
 
+            Integer actuatorId = resultSet.getInt("actuator_id");
+            actuatorId = resultSet.wasNull() ? null : actuatorId;
+            Actuator actuator = null;
+            if(actuatorId != null) {
+                actuator = new Actuator(resultSet.getInt("id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("description"),
+                        resultSet.getString("priority"),
+                        resultSet.getString("input_identifier"));
+            }
+
             CalibratedSensor sensor =  new CalibratedSensor(
                     resultSet.getInt("id"),
                     resultSet.getString("name"),
@@ -299,6 +332,7 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
                     resultSet.getString("unit_of_measurement"),
                     lastMeasurementValue,
                     resultSet.getString("threshold_type"),
+                    actuator,
                     maxValue,
                     minValue,
                     percentageThreshold);

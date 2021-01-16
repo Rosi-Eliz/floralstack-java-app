@@ -46,7 +46,6 @@ public class SensorController {
     CalibratedSensor getCalibratedSensor(@PathVariable("id") Integer id) {
         return sensorService.getCalibratedSensor(id);
     }
-
     //Common methods
     @PutMapping("static")
     public void updateSensor(@RequestBody @Valid StaticSensor sensor){

@@ -40,6 +40,17 @@ CREATE TABLE plant
     FOREIGN KEY (owner_id) REFERENCES "USER" (id) ON DELETE CASCADE
 );
 
+CREATE TABLE actuator
+(
+    id                       INTEGER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) NOT NULL,
+    name                     VARCHAR2(30),
+    description              VARCHAR2(30),
+    priority                 VARCHAR2(30),
+    input_identifier         VARCHAR2(30) UNIQUE,
+    CHECK (REGEXP_LIKE(input_identifier, '(an([1-9][0-9]?|100)M([1-9][0-9]?|100)$)|(di([1-9][0-9]?|100)$)')),
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE sensor
 (
     id INTEGER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) NOT NULL,
@@ -51,8 +62,11 @@ CREATE TABLE sensor
     unit_of_measurement VARCHAR(30) NOT NULL,
     last_measurement_value NUMBER,
     threshold_type VARCHAR(30),
-    PRIMARY KEY (id)
+    actuator_id INTEGER,
+    PRIMARY KEY (id),
+    FOREIGN KEY (actuator_id) REFERENCES actuator (id)
 );
+
 
 CREATE TABLE calibrated_sensor
 (

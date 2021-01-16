@@ -5,10 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.validation.constraints.NotBlank;
 
 public class Environment {
-    Integer id;
+    private final Integer id;
     @NotBlank
-    String name;
-    String description;
+    private final String name;
+    private final String description;
 
     public Environment(
             @JsonProperty("id") Integer id,

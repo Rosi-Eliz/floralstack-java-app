@@ -52,4 +52,8 @@ public class PlantService {
     public void attachStaticSensor(Integer plantId, Integer staticSensorId) {
         plantDataAccessServiceProvider.attachStaticSensor(plantId, staticSensorId);
     }
+
+    public void attachCalibratedSensor(Integer plantId, Integer calibratedSensorId) {
+        plantDataAccessServiceProvider.attachCalibratedSensor(plantId, calibratedSensorId);
+    }
 }

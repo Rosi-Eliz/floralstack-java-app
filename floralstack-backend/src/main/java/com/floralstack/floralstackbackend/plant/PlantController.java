@@ -55,4 +55,9 @@ public class PlantController {
     public void attachStaticSensor(@PathVariable("id") Integer id, @RequestBody @Valid IdentityRequestModel identityRequestModel){
         plantService.attachStaticSensor(id, identityRequestModel.getId());
     }
+
+    @PostMapping(path = "{id}/attach_calibrated_sensor")
+    public void attachCalibratedSensor(@PathVariable("id") Integer id, @RequestBody @Valid IdentityRequestModel identityRequestModel){
+        plantService.attachCalibratedSensor(id, identityRequestModel.getId());
+    }
 }

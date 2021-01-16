@@ -14,6 +14,7 @@ package com.floralstack.floralstackbackend.sensor;
 );*/
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.floralstack.floralstackbackend.actuator.Actuator;
 
 import javax.validation.constraints.NotBlank;
 
@@ -31,15 +32,17 @@ public class Sensor {
     private final Double lastMeasurementValue;
     @NotBlank
     private final String thresholdType;
+    private Actuator actuator;
 
     public Sensor(Integer id,
-                  @NotBlank String name,
+                  String name,
                   String description,
-                  @NotBlank String priority,
-                  @NotBlank String outputIdentifier,
-                  @NotBlank String unitOfMeasurement,
+                  String priority,
+                  String outputIdentifier,
+                  String unitOfMeasurement,
                   Double lastMeasurementValue,
-                  @NotBlank String thresholdType) {
+                  String thresholdType,
+                  Actuator actuator) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -48,6 +51,7 @@ public class Sensor {
         this.unitOfMeasurement = unitOfMeasurement;
         this.lastMeasurementValue = lastMeasurementValue;
         this.thresholdType = thresholdType;
+        this.actuator = actuator;
     }
 
     public Integer getId() {
@@ -82,8 +86,16 @@ public class Sensor {
         return thresholdType;
     }
 
+    public Actuator getActuator() {
+        return actuator;
+    }
+
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public void setActuator(Actuator actuator) {
+        this.actuator = actuator;
     }
 
     @Override
@@ -97,7 +109,7 @@ public class Sensor {
                 ", unitOfMeasurement='" + unitOfMeasurement + '\'' +
                 ", lastMeasurementValue=" + lastMeasurementValue +
                 ", thresholdType='" + thresholdType + '\'' +
+                ", actuator=" + actuator +
                 '}';
     }
-
 }
