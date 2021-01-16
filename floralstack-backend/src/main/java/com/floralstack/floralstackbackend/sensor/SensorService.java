@@ -79,4 +79,16 @@ public class SensorService {
             throw ApiRequestExceptionFactory.failedDeleteException;
         }
     }
+
+    public List<StaticSensor> getAllStaticUnattachedSensors() {
+        return sensorDataAccessService.getAllUnattachedStaticSensors();
+    }
+
+    public List<CalibratedSensor> getAllCalibratedUnattachedSensors() {
+        return sensorDataAccessService.getAllUnattachedCalibratedSensors();
+    }
+
+    public void attachActuator(Integer id, Integer id1) {
+         sensorDataAccessService.attachActuator(id, id1);
+    }
 }

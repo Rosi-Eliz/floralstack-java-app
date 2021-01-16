@@ -1,5 +1,6 @@
 package com.floralstack.floralstackbackend.sensor;
 
+import com.floralstack.floralstackbackend.commons.IdentityRequestModel;
 import com.floralstack.floralstackbackend.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,11 @@ public class SensorController {
         return sensorService.getAllStaticSensors();
     }
 
+    @GetMapping("static-unattached")
+    List<StaticSensor> getAllStaticUnattachedSensors(){
+        return sensorService.getAllStaticUnattachedSensors();
+    }
+
     @GetMapping("static/{id}")
     StaticSensor getStaticSensor(@PathVariable("id") Integer id) {
         return sensorService.getStaticSensor(id);
@@ -40,6 +46,11 @@ public class SensorController {
     @GetMapping("calibrated")
     List<CalibratedSensor> getAllCalibratedSensors(){
         return sensorService.getAllCalibratedSensors();
+    }
+
+    @GetMapping("calibrated-unattached")
+    List<CalibratedSensor> getAllCalibratedUnattachedSensors(){
+        return sensorService.getAllCalibratedUnattachedSensors();
     }
 
     @GetMapping("calibrated/{id}")
@@ -60,5 +71,11 @@ public class SensorController {
     @DeleteMapping(path = "{id}")
     public void deleteSensor(@PathVariable("id") Integer id) {
         sensorService.deleteSensor(id);
+    }
+
+
+    @PostMapping(path = "{id}/attach_actuator")
+    public void attachActuator(@PathVariable("id") Integer id, @RequestBody @Valid IdentityRequestModel identityRequestModel){
+        sensorService.attachActuator(id, identityRequestModel.getId());
     }
 }
