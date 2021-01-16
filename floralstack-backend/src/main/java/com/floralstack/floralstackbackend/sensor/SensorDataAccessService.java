@@ -98,17 +98,49 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
     public List<StaticSensor> getAllStaticSensors() {
         String query = "" +
                 "SELECT sensor.id," +
-                "name, " +
-                "description, " +
-                "priority, " +
+                "sensor.name, " +
+                "sensor.description, " +
+                "sensor.priority, " +
                 "output_identifier, " +
                 "unit_of_measurement, " +
                 "last_measurement_value, " +
                 "threshold_type, " +
-                "actuator_id, " +
+                "a.id AS actuator_id, " +
+                "a.name AS actuator_name, " +
+                "a.description AS actuator_description, " +
+                "a.priority AS actuator_priority, " +
+                "a.input_identifier AS input_identifier, " +
                 "static_sensor.threshold_offset " +
                 "FROM sensor INNER JOIN static_sensor " +
-                "ON sensor.id = static_sensor.id";
+                "ON sensor.id = static_sensor.id " +
+                "LEFT JOIN actuator a ON " +
+                "actuator_id = a.id";
+        return jdbcTemplateHelper.query(query, staticSensorRowMapper());
+    }
+
+    @Override
+    public List<StaticSensor> getAllUnattachedStaticSensors() {
+        String query = "" +
+                "SELECT sensor.id, " +
+                "sensor.name, " +
+                "sensor.description, " +
+                "sensor.priority, " +
+                "sensor.output_identifier, " +
+                "sensor.unit_of_measurement, " +
+                "sensor.last_measurement_value, " +
+                "sensor.threshold_type, " +
+                "a.id AS actuator_id, " +
+                "a.name AS actuator_name, " +
+                "a.description AS actuator_description, " +
+                "a.priority AS actuator_priority, " +
+                "a.input_identifier AS input_identifier, " +
+                "static_sensor.threshold_offset " +
+                "FROM sensor INNER JOIN static_sensor " +
+                "ON sensor.id = static_sensor.id " +
+                "LEFT JOIN actuator a ON " +
+                "actuator_id = a.id " +
+                "WHERE sensor.id NOT IN " +
+                "(SELECT static_sensor_id FROM plant_static_sensor)";
         return jdbcTemplateHelper.query(query, staticSensorRowMapper());
     }
 
@@ -143,7 +175,6 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
                 "unit_of_measurement = ?, " +
                 "last_measurement_value = ?, "+
                 "threshold_type = ?, " +
-                "actuator_id = ? " +
                 "WHERE id = ?";
 
         Integer sensorUpdate = jdbcTemplateHelper.update(
@@ -155,7 +186,6 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
                 sensor.getUnitOfMeasurement(),
                 sensor.getLastMeasurementValue(),
                 sensor.getThresholdType(),
-                sensor.getActuator().getId(),
                 sensor.getId());
         if(sensorUpdate == 0) {
             return sensorUpdate;
@@ -221,20 +251,54 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
     @Override
     public List<CalibratedSensor> getAllCalibratedSensors() {
         String query = "" +
-                "SELECT sensor.id," +
-                "name, " +
-                "description, " +
-                "priority, " +
-                "output_identifier, " +
-                "unit_of_measurement, " +
-                "last_measurement_value, " +
-                "threshold_type, " +
-                "actuator_id, " +
+                "SELECT sensor.id, " +
+                "sensor.name, " +
+                "sensor.description, " +
+                "sensor.priority, " +
+                "sensor.output_identifier, " +
+                "sensor.unit_of_measurement, " +
+                "sensor.last_measurement_value, " +
+                "sensor.threshold_type, " +
+                "a.id AS actuator_id, " +
+                "a.name AS actuator_name, " +
+                "a.description AS actuator_description, " +
+                "a.priority AS actuator_priority, " +
+                "a.input_identifier AS input_identifier, " +
                 "calibrated_sensor.max_value, " +
-                "calibrated_sensor.min_value," +
+                "calibrated_sensor.min_value, " +
                 "calibrated_sensor.percentage_threshold " +
                 "FROM sensor INNER JOIN calibrated_sensor " +
-                "ON sensor.id = calibrated_sensor.id";
+                "ON sensor.id = calibrated_sensor.id " +
+                "LEFT JOIN actuator a ON " +
+                "actuator_id = a.id ";
+        return jdbcTemplateHelper.query(query, calibratedSensorRowMapper());
+    }
+
+    @Override
+    public List<CalibratedSensor> getAllUnattachedCalibratedSensors() {
+        String query = "" +
+                "SELECT sensor.id, " +
+                "sensor.name, " +
+                "sensor.description, " +
+                "sensor.priority, " +
+                "sensor.output_identifier, " +
+                "sensor.unit_of_measurement, " +
+                "sensor.last_measurement_value, " +
+                "sensor.threshold_type, " +
+                "a.id AS actuator_id, " +
+                "a.name AS actuator_name, " +
+                "a.description AS actuator_description, " +
+                "a.priority AS actuator_priority, " +
+                "a.input_identifier AS input_identifier, " +
+                "calibrated_sensor.max_value, " +
+                "calibrated_sensor.min_value, " +
+                "calibrated_sensor.percentage_threshold " +
+                "FROM sensor INNER JOIN calibrated_sensor " +
+                "ON sensor.id = calibrated_sensor.id " +
+                "LEFT JOIN actuator a ON " +
+                "actuator_id = a.id " +
+                "WHERE sensor.id NOT IN " +
+                "(SELECT calibrated_sensor_id FROM plant_calibrated_sensor)";
         return jdbcTemplateHelper.query(query, calibratedSensorRowMapper());
     }
 
@@ -242,21 +306,37 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
     public CalibratedSensor getCalibratedSensor(Integer id) {
         String query = "" +
                 "SELECT sensor.id," +
-                "name, " +
-                "description, " +
-                "priority, " +
-                "output_identifier, " +
-                "unit_of_measurement, " +
-                "last_measurement_value, " +
-                "threshold_type," +
-                "actuator_id, " +
+                "sensor.name, " +
+                "sensor.description, " +
+                "sensor.priority, " +
+                "sensor.output_identifier, " +
+                "sensor.unit_of_measurement, " +
+                "sensor.last_measurement_value, " +
+                "sensor.threshold_type," +
+                "a.id AS actuator_id, " +
+                "a.name AS actuator_name, " +
+                "a.description AS actuator_description, " +
+                "a.priority AS actuator_priority, " +
+                "a.input_identifier AS input_identifier, " +
                 "calibrated_sensor.max_value, " +
                 "calibrated_sensor.min_value," +
                 "calibrated_sensor.threshold_type " +
                 "FROM sensor INNER JOIN calibrated_sensor " +
+                "LEFT JOIN actuator a ON " +
+                "actuator_id = a.id " +
                 "WHERE sensor.id = ?";
 
         return jdbcTemplateHelper.queryForObject(query, calibratedSensorRowMapper(), id);
+    }
+
+    @Override
+    public void attachActuator(Integer id, Integer id1) {
+        String actuatorAttachQuery = "" +
+                "UPDATE sensor " +
+                "SET actuator_id = ? " +
+                "WHERE id = ?";
+
+        jdbcTemplateHelper.update(actuatorAttachQuery, id, id1);
     }
     // MAPPERS
 
