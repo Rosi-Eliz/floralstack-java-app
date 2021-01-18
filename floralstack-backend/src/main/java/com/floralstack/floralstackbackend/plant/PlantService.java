@@ -32,6 +32,16 @@ public class PlantService {
         }
     }
 
+    void updatePlant(Plant.Update plant) {
+        if (plant.getId() == null) {
+            throw ApiRequestExceptionFactory.missingIdException;
+        }
+        Integer update = plantDataAccessServiceProvider.updatePlant(plant);
+        if (update == 0) {
+            throw ApiRequestExceptionFactory.failedUpdateException;
+        }
+    }
+
     Plant getPlant(Integer id) { return plantDataAccessServiceProvider.getPlant(id); };
 
     List<Plant> getAllPlants() { return plantDataAccessServiceProvider.getAllPlants(); }
@@ -55,5 +65,13 @@ public class PlantService {
 
     public void attachCalibratedSensor(Integer plantId, Integer calibratedSensorId) {
         plantDataAccessServiceProvider.attachCalibratedSensor(plantId, calibratedSensorId);
+    }
+
+    public void detachStaticSensor(Integer plantId, Integer staticSensorId) {
+        plantDataAccessServiceProvider.attachStaticSensor(plantId, staticSensorId);
+    }
+
+    public void detachCalibratedSensor(Integer plantId, Integer calibratedSensorId) {
+        plantDataAccessServiceProvider.detachCalibratedSensor(plantId, calibratedSensorId);
     }
 }

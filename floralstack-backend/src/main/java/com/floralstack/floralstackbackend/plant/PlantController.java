@@ -46,6 +46,11 @@ public class PlantController {
         plantService.updatePlant(plant);
     }
 
+    @PostMapping("update")
+    public void updatePlant(@RequestBody @Valid Plant.Update plant){
+        plantService.updatePlant(plant);
+    }
+
     @DeleteMapping(path = "{id}")
     public void deletePlant(@PathVariable("id") Integer id) {
         plantService.deletePlant(id);
@@ -55,9 +60,17 @@ public class PlantController {
     public void attachStaticSensor(@PathVariable("id") Integer id, @RequestBody @Valid IdentityRequestModel identityRequestModel){
         plantService.attachStaticSensor(id, identityRequestModel.getId());
     }
-
     @PostMapping(path = "{id}/attach_calibrated_sensor")
     public void attachCalibratedSensor(@PathVariable("id") Integer id, @RequestBody @Valid IdentityRequestModel identityRequestModel){
         plantService.attachCalibratedSensor(id, identityRequestModel.getId());
+    }
+    @PostMapping(path = "{id}/detach_calibrated_sensor")
+    public void detachCalibratedSensor(@PathVariable("id") Integer id, @RequestBody @Valid IdentityRequestModel identityRequestModel){
+        plantService.detachCalibratedSensor(id, identityRequestModel.getId());
+    }
+
+    @PostMapping(path = "{id}/detach_static_sensor")
+    public void detachStaticSensor(@PathVariable("id") Integer id, @RequestBody @Valid IdentityRequestModel identityRequestModel){
+        plantService.detachStaticSensor(id, identityRequestModel.getId());
     }
 }

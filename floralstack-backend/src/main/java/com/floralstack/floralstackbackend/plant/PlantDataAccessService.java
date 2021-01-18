@@ -372,6 +372,25 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
     }
 
     @Override
+    public Integer updatePlant(Plant.Update plant) {
+        String query = "" +
+                "UPDATE plant " +
+                "SET name = ?, " +
+                "description = ?, " +
+                "environment_id = ?, " +
+                "owner_id = ? " +
+                "WHERE plant.id = ?";
+
+        return jdbcTemplateHelper.update(
+                query,
+                plant.getName(),
+                plant.getDescription(),
+                plant.getEnvironmentId(),
+                plant.getOwnerId(),
+                plant.getId());
+    }
+
+    @Override
     public Integer deletePlant(Integer id) {
         String query = "" +
                 "DELETE FROM plant " +
@@ -403,6 +422,22 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 "(SELECT * FROM plant_calibrated_sensor " +
                 "WHERE plant_id = ? AND calibrated_sensor_id = ?)" ;
         jdbcTemplateHelper.update(query, plantId, calibratedSensorId, plantId, calibratedSensorId);
+    }
+
+    @Override
+    public void detachStaticSensor(Integer plantId, Integer staticSensorId) {
+        String query = "" +
+                "DELETE FROM plant_static_sensor " +
+                "WHERE plant_id = ? AND static_sensor_id = ?";
+        jdbcTemplateHelper.update(query, plantId, staticSensorId);
+    }
+
+    @Override
+    public void detachCalibratedSensor(Integer plantId, Integer calibratedSensorId) {
+        String query = "" +
+                "DELETE FROM plant_calibrated_sensor " +
+                "WHERE plant_id = ? AND calibrated_sensor_id = ?";
+        jdbcTemplateHelper.update(query, plantId, calibratedSensorId);
     }
 
     // Mappers
@@ -451,6 +486,7 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                             description,
                             environment,
                             owner,
+                            null,
                             null,
                             creationDate);
                     plants.put(plantId, plant);

@@ -3,7 +3,7 @@ package com.floralstack.floralstackbackend.sensor;
 import java.util.List;
 
 public interface SensorDataAccessServiceProvider {
-    SensorDataAccessService.CreateSensorResult createSensor(Sensor sensor);
+    CreateSensorResult createSensor(Sensor sensor);
     Integer createStaticSensor(StaticSensor staticSensor);
     List<StaticSensor> getAllStaticSensors();
     List<StaticSensor> getAllUnattachedStaticSensors();
@@ -15,4 +15,5 @@ public interface SensorDataAccessServiceProvider {
     List<CalibratedSensor> getAllUnattachedCalibratedSensors();
     CalibratedSensor getCalibratedSensor(Integer id);
     void attachActuator(Integer id, Integer id1);
+    void detachActuator(Integer id, Integer id1);
 }

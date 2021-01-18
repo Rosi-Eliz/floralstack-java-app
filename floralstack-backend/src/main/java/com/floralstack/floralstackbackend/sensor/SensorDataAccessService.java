@@ -1,22 +1,17 @@
 package com.floralstack.floralstackbackend.sensor;
 
 import com.floralstack.floralstackbackend.actuator.Actuator;
-import com.floralstack.floralstackbackend.environment.Environment;
-import com.floralstack.floralstackbackend.user.User;
+import com.floralstack.floralstackbackend.sensor.CreateSensorResult;
 import com.floralstack.floralstackbackend.utilities.JdbcTemplateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,24 +24,6 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
         this.jdbcTemplateHelper = jdbcTemplateHelper;
     }
 
-    public static class CreateSensorResult {
-        private Integer queryResult;
-        private Integer createdSensorId;
-
-        public CreateSensorResult(Integer queryResult, Integer createdSensorId) {
-            this.queryResult = queryResult;
-            this.createdSensorId = createdSensorId;
-        }
-
-        public Integer getQueryResult() {
-            return queryResult;
-        }
-
-        public Integer getCreatedSensorId() {
-            return createdSensorId;
-        }
-    }
-
     @Override
     public CreateSensorResult createSensor(Sensor sensor) {
         String query = "" +
@@ -57,15 +34,14 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
                 "output_identifier, " +
                 "unit_of_measurement, " +
                 "last_measurement_value, " +
-                "threshold_type, " +
-                "actuator_id) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                "threshold_type) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
         Integer insertionResult = jdbcTemplateHelper.update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                PreparedStatement statement = connection.prepareStatement(query, new String[] { "id" });
+                PreparedStatement statement = connection.prepareStatement(query, new String[]{"id"});
                 statement.setString(1, sensor.getName());
                 statement.setString(2, sensor.getDescription());
                 statement.setString(3, sensor.getPriority());
@@ -73,7 +49,6 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
                 statement.setString(5, sensor.getUnitOfMeasurement());
                 statement.setDouble(6, sensor.getLastMeasurementValue());
                 statement.setString(7, sensor.getThresholdType());
-                statement.setInt(8, sensor.getActuator().getId());
                 return statement;
             }
         }, generatedKeyHolder);
@@ -335,11 +310,19 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider{
                 "UPDATE sensor " +
                 "SET actuator_id = ? " +
                 "WHERE id = ?";
-
         jdbcTemplateHelper.update(actuatorAttachQuery, id, id1);
     }
-    // MAPPERS
 
+    @Override
+    public void detachActuator(Integer id, Integer id1) {
+        String actuatorAttachQuery = "" +
+                "UPDATE sensor " +
+                "SET actuator_id = NULL " +
+                "WHERE sensor.id = ?";
+        jdbcTemplateHelper.update(actuatorAttachQuery, id, id1);
+    }
+
+    // MAPPERS
     private RowMapper<StaticSensor> staticSensorRowMapper() {
         RowMapper<StaticSensor> rowMapper = (resultSet, i) -> {
 
