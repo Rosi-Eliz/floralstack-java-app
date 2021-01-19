@@ -425,19 +425,19 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
     }
 
     @Override
-    public void detachStaticSensor(Integer plantId, Integer staticSensorId) {
+    public Integer detachStaticSensor(Integer plantId, Integer staticSensorId) {
         String query = "" +
                 "DELETE FROM plant_static_sensor " +
                 "WHERE plant_id = ? AND static_sensor_id = ?";
-        jdbcTemplateHelper.update(query, plantId, staticSensorId);
+        return jdbcTemplateHelper.update(query, plantId, staticSensorId);
     }
 
     @Override
-    public void detachCalibratedSensor(Integer plantId, Integer calibratedSensorId) {
+    public Integer detachCalibratedSensor(Integer plantId, Integer calibratedSensorId) {
         String query = "" +
                 "DELETE FROM plant_calibrated_sensor " +
                 "WHERE plant_id = ? AND calibrated_sensor_id = ?";
-        jdbcTemplateHelper.update(query, plantId, calibratedSensorId);
+        return jdbcTemplateHelper.update(query, plantId, calibratedSensorId);
     }
 
     // Mappers
@@ -520,7 +520,7 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                             resultSet.getString("static_unit_of_measurement"),
                             lastMeasurementValue,
                             resultSet.getString("static_threshold_type"),
-                            actuator,
+                            null,
                             thresholdOffset
                     );
                     staticSensorsMap.put(staticSensor.getId(), staticSensor);
@@ -563,7 +563,7 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                             resultSet.getString("calibrated_unit_of_measurement"),
                             lastMeasurementValue,
                             resultSet.getString("calibrated_threshold_type"),
-                            actuator,
+                            null,
                             maxValue,
                             minValue,
                             percentage_threshold

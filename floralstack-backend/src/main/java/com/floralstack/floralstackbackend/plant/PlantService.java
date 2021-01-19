@@ -68,10 +68,16 @@ public class PlantService {
     }
 
     public void detachStaticSensor(Integer plantId, Integer staticSensorId) {
-        plantDataAccessServiceProvider.attachStaticSensor(plantId, staticSensorId);
+        Integer delete = plantDataAccessServiceProvider.detachStaticSensor(plantId, staticSensorId);
+        if (delete == 0) {
+            throw ApiRequestExceptionFactory.failedDeleteException;
+        }
     }
 
     public void detachCalibratedSensor(Integer plantId, Integer calibratedSensorId) {
-        plantDataAccessServiceProvider.detachCalibratedSensor(plantId, calibratedSensorId);
+        Integer delete = plantDataAccessServiceProvider.detachCalibratedSensor(plantId, calibratedSensorId);
+        if (delete == 0) {
+            throw ApiRequestExceptionFactory.failedDeleteException;
+        }
     }
 }

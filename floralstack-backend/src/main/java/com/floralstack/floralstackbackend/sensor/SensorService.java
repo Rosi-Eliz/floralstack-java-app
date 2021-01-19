@@ -93,6 +93,9 @@ public class SensorService {
     }
 
     public void detachActuator(Integer id, Integer id1) {
-        sensorDataAccessService.detachActuator(id, id1);
+        Integer detachment = sensorDataAccessService.detachActuator(id, id1);
+        if (detachment == 0) {
+            throw ApiRequestExceptionFactory.failedDeleteException;
+        }
     }
 }

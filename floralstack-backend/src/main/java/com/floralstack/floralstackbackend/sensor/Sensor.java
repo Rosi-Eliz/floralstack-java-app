@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.floralstack.floralstackbackend.actuator.Actuator;
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 public class Sensor {
     private Integer id;
@@ -32,7 +33,7 @@ public class Sensor {
     private final Double lastMeasurementValue;
     @NotBlank
     private final String thresholdType;
-    private Actuator actuator;
+    private List<Actuator> actuators;
 
     public Sensor(Integer id,
                   String name,
@@ -42,7 +43,7 @@ public class Sensor {
                   String unitOfMeasurement,
                   Double lastMeasurementValue,
                   String thresholdType,
-                  Actuator actuator) {
+                  List<Actuator> actuators) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -51,7 +52,7 @@ public class Sensor {
         this.unitOfMeasurement = unitOfMeasurement;
         this.lastMeasurementValue = lastMeasurementValue;
         this.thresholdType = thresholdType;
-        this.actuator = actuator;
+        this.actuators = actuators;
     }
 
     public Integer getId() {
@@ -86,16 +87,16 @@ public class Sensor {
         return thresholdType;
     }
 
-    public Actuator getActuator() {
-        return actuator;
+    public List<Actuator> getActuators() {
+        return actuators;
     }
 
     public void setId(Integer id) {
         this.id = id;
     }
 
-    public void setActuator(Actuator actuator) {
-        this.actuator = actuator;
+    public void setActuators(List<Actuator> actuators) {
+        this.actuators = actuators;
     }
 
     @Override
@@ -109,7 +110,7 @@ public class Sensor {
                 ", unitOfMeasurement='" + unitOfMeasurement + '\'' +
                 ", lastMeasurementValue=" + lastMeasurementValue +
                 ", thresholdType='" + thresholdType + '\'' +
-                ", actuator=" + actuator +
+                ", actuators=" + actuators +
                 '}';
     }
 }

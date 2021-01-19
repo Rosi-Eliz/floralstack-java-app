@@ -62,9 +62,7 @@ CREATE TABLE sensor
     unit_of_measurement VARCHAR(30) NOT NULL,
     last_measurement_value NUMBER,
     threshold_type VARCHAR(30),
-    actuator_id INTEGER,
-    PRIMARY KEY (id),
-    FOREIGN KEY (actuator_id) REFERENCES actuator (id)
+    PRIMARY KEY (id)
 );
 
 
@@ -103,3 +101,12 @@ CREATE TABLE plant_calibrated_sensor
     FOREIGN KEY (plant_id) REFERENCES plant (id),
     FOREIGN KEY (calibrated_sensor_id) REFERENCES calibrated_sensor (id) ON DELETE CASCADE
 );
+
+CREATE TABLE sensor_actuator
+(
+    sensor_id INTEGER UNIQUE,
+    actuator_id INTEGER UNIQUE,
+    PRIMARY KEY(sensor_id, actuator_id),
+    FOREIGN KEY (sensor_id) REFERENCES sensor (id),
+    FOREIGN KEY (actuator_id) REFERENCES actuator (id)
+)

@@ -5,6 +5,7 @@ import com.floralstack.floralstackbackend.actuator.Actuator;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 public class StaticSensor extends Sensor{
     @NotNull
@@ -18,9 +19,9 @@ public class StaticSensor extends Sensor{
                         @JsonProperty("unit_of_measurement") @NotBlank String unitOfMeasurement,
                         @JsonProperty("last_measurement_value") Double lastMeasurementValue,
                         @JsonProperty("threshold_type") @NotBlank String thresholdType,
-                        @JsonProperty("actuator") Actuator actuator,
+                        @JsonProperty("actuators") List<Actuator> actuators,
                         @JsonProperty("threshold_offset") @NotBlank Double thresholdOffset) {
-        super(id, name, description, priority, outputIdentifier, unitOfMeasurement, lastMeasurementValue, thresholdType, actuator);
+        super(id, name, description, priority, outputIdentifier, unitOfMeasurement, lastMeasurementValue, thresholdType, actuators);
         this.thresholdOffset = thresholdOffset;
     }
 

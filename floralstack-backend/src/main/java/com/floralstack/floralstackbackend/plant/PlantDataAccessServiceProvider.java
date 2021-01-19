@@ -17,6 +17,6 @@ public interface PlantDataAccessServiceProvider {
     Integer deletePlant(Integer id);
     void attachStaticSensor(Integer plantId, Integer staticSensorId);
     void attachCalibratedSensor(Integer plantId, Integer calibratedSensorId);
-    void detachStaticSensor(Integer plantId, Integer staticSensorId);
-    void detachCalibratedSensor(Integer plantId, Integer staticSensorId);
+    Integer detachStaticSensor(Integer plantId, Integer staticSensorId);
+    Integer detachCalibratedSensor(Integer plantId, Integer staticSensorId);
 }

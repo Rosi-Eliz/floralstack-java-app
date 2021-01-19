@@ -80,6 +80,6 @@ public class SensorController {
 
     @PostMapping(path = "{id}/detach_actuator")
     public void detachActuator(@PathVariable("id") Integer id, @RequestBody @Valid IdentityRequestModel identityRequestModel){
-        sensorService.detachActuator(id, identityRequestModel.getId());
+       sensorService.detachActuator(id, identityRequestModel.getId());
     }
 }

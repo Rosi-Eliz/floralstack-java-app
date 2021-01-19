@@ -15,5 +15,5 @@ public interface SensorDataAccessServiceProvider {
     List<CalibratedSensor> getAllUnattachedCalibratedSensors();
     CalibratedSensor getCalibratedSensor(Integer id);
     void attachActuator(Integer id, Integer id1);
-    void detachActuator(Integer id, Integer id1);
+    Integer detachActuator(Integer id, Integer id1);
 }
