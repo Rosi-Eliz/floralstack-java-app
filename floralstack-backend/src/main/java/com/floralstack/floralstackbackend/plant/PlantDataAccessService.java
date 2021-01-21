@@ -79,11 +79,16 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 "cs.max_value AS max_value, " +
                 "cs.min_value AS min_value, " +
                 "cs.percentage_threshold AS percentage_threshold, " +
-                "a.id AS actuator_id, " +
-                "a.name AS actuator_name, " +
-                "a.description AS actuator_description, " +
-                "a.priority AS actuator_priority, " +
-                "a.input_identifier AS input_identifier " +
+                "asa.id AS static_actuator_id, " +
+                "asa.name AS static_actuator_name, " +
+                "asa.description AS static_actuator_description, " +
+                "asa.priority AS static_actuator_priority, " +
+                "asa.input_identifier AS static_input_identifier, " +
+                "ac.id AS calibrated_actuator_id, " +
+                "ac.name AS calibrated_actuator_name, " +
+                "ac.description AS calibrated_actuator_description, " +
+                "ac.priority AS calibrated_actuator_priority, " +
+                "ac.input_identifier AS calibrated_input_identifier " +
                 "FROM plant p " +
                 "LEFT JOIN " +
                 "\"USER\" u ON " +
@@ -112,8 +117,17 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 "sensor csp ON " +
                 "cs.id = csp.id " +
                 "LEFT JOIN " +
-                "actuator a ON " +
-                "csp.actuator_id = a.id " +
+                "sensor_actuator sa ON " +
+                "ssp.id = sa.sensor_id " +
+                "LEFT JOIN " +
+                "actuator asa ON " +
+                "sa.actuator_id = asa.id " +
+                "LEFT JOIN " +
+                "sensor_actuator ca ON " +
+                "csp.id = ca.sensor_id " +
+                "LEFT JOIN " +
+                "actuator ac ON " +
+                "ca.actuator_id = ac.id " +
                 "WHERE p.id = ?";
 
         List<Plant> result = jdbcTemplateHelper.query(query, plantResultSetExtractor(), id);
@@ -448,6 +462,8 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
             Map<Integer, CalibratedSensor> calibratedSensorsMap = new HashMap<>();
             Map<Integer, StaticSensor> staticSensorsMap = new HashMap<>();
             Map<Integer, Plant> plants = new HashMap<>();
+            Map<Integer, Actuator> staticActuators = new HashMap<>();
+            Map<Integer, Actuator> calibratedActuators = new HashMap<>();
             while(resultSet.next()) {
                 Integer plantId = resultSet.getInt("plant_id");
                 Plant plant = plants.get(plantId);
@@ -494,22 +510,12 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 Integer staticSensorId = resultSet.getInt("static_sensor_id");
                 if(!resultSet.wasNull() && !staticSensorsMap.containsKey(staticSensorId))
                 {
+                    staticActuators = new HashMap<>();
                     Double lastMeasurementValue = resultSet.getDouble("static_last_measurement_value");
                     lastMeasurementValue = resultSet.wasNull() ? null : lastMeasurementValue;
 
                     Double thresholdOffset = resultSet.getDouble("threshold_offset");
                     thresholdOffset = resultSet.wasNull() ? null : thresholdOffset;
-
-                    Integer actuatorId = resultSet.getInt("actuator_id");
-                    actuatorId = resultSet.wasNull() ? null : actuatorId;
-                    Actuator actuator = null;
-                    if(actuatorId != null) {
-                        actuator = new Actuator(resultSet.getInt("actuator_id"),
-                                resultSet.getString("actuator_name"),
-                                resultSet.getString("actuator_description"),
-                                resultSet.getString("actuator_priority"),
-                                resultSet.getString("input_identifier"));
-                    }
 
                     StaticSensor staticSensor = new StaticSensor(
                             staticSensorId,
@@ -526,6 +532,21 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                     staticSensorsMap.put(staticSensor.getId(), staticSensor);
                     plant.setStaticSensorsList(new ArrayList<>(staticSensorsMap.values()));
                 }
+                if(staticSensorsMap.containsKey(staticSensorId)) {
+                    StaticSensor sensor = staticSensorsMap.get(staticSensorId);
+                    Integer actuatorId = resultSet.getInt("static_actuator_id");
+                    actuatorId = resultSet.wasNull() ? null : actuatorId;
+                    if(actuatorId != null && !staticActuators.containsKey(actuatorId)) {
+                        Actuator actuator = new Actuator(resultSet.getInt("static_actuator_id"),
+                                resultSet.getString("static_actuator_name"),
+                                resultSet.getString("static_actuator_description"),
+                                resultSet.getString("static_actuator_priority"),
+                                resultSet.getString("static_input_identifier"));
+                        staticActuators.put(actuatorId, actuator);
+                        sensor.setActuators(new ArrayList<>(staticActuators.values()));
+                    }
+                }
+
 
                 Integer calibratedSensorId = resultSet.getInt("calibrated_sensor_id");
                 if(!resultSet.wasNull() && !calibratedSensorsMap.containsKey(calibratedSensorId))
@@ -541,18 +562,6 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
 
                     Double percentage_threshold = resultSet.getDouble("percentage_threshold");
                     percentage_threshold = resultSet.wasNull() ? null : percentage_threshold;
-
-                    Integer actuatorId = resultSet.getInt("actuator_id");
-                    actuatorId = resultSet.wasNull() ? null : actuatorId;
-                    Actuator actuator = null;
-                    if(actuatorId != null) {
-                        actuator = new Actuator(resultSet.getInt("actuator_id"),
-                                resultSet.getString("actuator_name"),
-                                resultSet.getString("actuator_description"),
-                                resultSet.getString("actuator_priority"),
-                                resultSet.getString("input_identifier"));
-                    }
-
 
                     CalibratedSensor calibratedSensor = new CalibratedSensor(
                             calibratedSensorId,
@@ -570,6 +579,20 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                     );
                     calibratedSensorsMap.put(calibratedSensor.getId(), calibratedSensor);
                     plant.setCalibratedSensorsList(new ArrayList<>(calibratedSensorsMap.values()));
+                }
+                if(calibratedSensorsMap.containsKey(calibratedSensorId)) {
+                    CalibratedSensor sensor = calibratedSensorsMap.get(calibratedSensorId);
+                    Integer actuatorId = resultSet.getInt("calibrated_actuator_id");
+                    actuatorId = resultSet.wasNull() ? null : actuatorId;
+                    if(actuatorId != null && !calibratedActuators.containsKey(actuatorId)) {
+                        Actuator actuator = new Actuator(resultSet.getInt("calibrated_actuator_id"),
+                                resultSet.getString("calibrated_actuator_name"),
+                                resultSet.getString("calibrated_actuator_description"),
+                                resultSet.getString("calibrated_actuator_priority"),
+                                resultSet.getString("calibrated_input_identifier"));
+                        calibratedActuators.put(actuatorId, actuator);
+                        sensor.setActuators(new ArrayList<>(calibratedActuators.values()));
+                    }
                 }
             }
             return new ArrayList<Plant>(plants.values());

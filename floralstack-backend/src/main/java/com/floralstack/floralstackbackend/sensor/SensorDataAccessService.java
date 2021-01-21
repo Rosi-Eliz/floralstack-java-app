@@ -81,12 +81,12 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider 
                 "unit_of_measurement, " +
                 "last_measurement_value, " +
                 "threshold_type, " +
-                "static_sensor.threshold_offset " +
+                "static_sensor.threshold_offset, " +
                 "a.id AS actuator_id, " +
                 "a.name AS actuator_name, " +
                 "a.description AS actuator_description, " +
                 "a.priority AS actuator_priority, " +
-                "a.input_identifier AS input_identifier, " +
+                "a.input_identifier AS input_identifier " +
                 "FROM sensor INNER JOIN static_sensor " +
                 "ON sensor.id = static_sensor.id " +
                 "LEFT JOIN sensor_actuator sa ON " +
@@ -107,12 +107,12 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider 
                 "sensor.unit_of_measurement, " +
                 "sensor.last_measurement_value, " +
                 "sensor.threshold_type, " +
-                "static_sensor.threshold_offset " +
+                "static_sensor.threshold_offset, " +
                 "a.id AS actuator_id, " +
                 "a.name AS actuator_name, " +
                 "a.description AS actuator_description, " +
                 "a.priority AS actuator_priority, " +
-                "a.input_identifier AS input_identifier, " +
+                "a.input_identifier AS input_identifier " +
                 "FROM sensor INNER JOIN static_sensor " +
                 "ON sensor.id = static_sensor.id " +
                 "LEFT JOIN sensor_actuator sa ON " +
@@ -128,19 +128,19 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider 
     public StaticSensor getStaticSensor(Integer id) {
         String query = "" +
                 "SELECT sensor.id," +
-                "name, " +
-                "description, " +
-                "priority, " +
+                "sensor.name, " +
+                "sensor.description, " +
+                "sensor.priority, " +
                 "output_identifier, " +
                 "unit_of_measurement, " +
                 "last_measurement_value, " +
                 "threshold_type, " +
-                "static_sensor.threshold_offset " +
+                "static_sensor.threshold_offset, " +
                 "a.id AS actuator_id, " +
                 "a.name AS actuator_name, " +
                 "a.description AS actuator_description, " +
                 "a.priority AS actuator_priority, " +
-                "a.input_identifier AS input_identifier, " +
+                "a.input_identifier AS input_identifier " +
                 "FROM sensor INNER JOIN static_sensor " +
                 "ON sensor.id = static_sensor.id " +
                 "LEFT JOIN sensor_actuator sa ON " +
