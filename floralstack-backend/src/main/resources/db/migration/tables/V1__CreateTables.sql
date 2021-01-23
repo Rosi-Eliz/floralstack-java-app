@@ -36,8 +36,8 @@ CREATE TABLE plant
     owner_id         INTEGER,
     creation_date    DATE,
     PRIMARY KEY (id),
-    FOREIGN KEY (environment_id) REFERENCES environment (id) ON DELETE CASCADE,
-    FOREIGN KEY (owner_id) REFERENCES "USER" (id) ON DELETE CASCADE
+    FOREIGN KEY (environment_id) REFERENCES environment (id),
+    FOREIGN KEY (owner_id) REFERENCES "USER" (id)
 );
 
 CREATE TABLE actuator

@@ -1,0 +1,6 @@
+CREATE OR REPLACE TRIGGER delete_sensor_actuator
+    BEFORE DELETE ON SENSOR
+    FOR EACH ROW
+BEGIN
+    DELETE FROM SENSOR_ACTUATOR where sensor_id = :old.id;
+END;

@@ -294,29 +294,29 @@ public class SensorDataAccessService implements SensorDataAccessServiceProvider 
     @Override
     public CalibratedSensor getCalibratedSensor(Integer id) {
         String query = "" +
-                "SELECT sensor.id," +
+                "SELECT sensor.id, " +
                 "sensor.name, " +
                 "sensor.description, " +
                 "sensor.priority, " +
                 "sensor.output_identifier, " +
                 "sensor.unit_of_measurement, " +
                 "sensor.last_measurement_value, " +
-                "sensor.threshold_type," +
+                "sensor.threshold_type, " +
                 "a.id AS actuator_id, " +
                 "a.name AS actuator_name, " +
                 "a.description AS actuator_description, " +
                 "a.priority AS actuator_priority, " +
                 "a.input_identifier AS input_identifier, " +
                 "calibrated_sensor.max_value, " +
-                "calibrated_sensor.min_value," +
-                "calibrated_sensor.threshold_type " +
+                "calibrated_sensor.min_value, " +
+                "calibrated_sensor.percentage_threshold " +
                 "FROM sensor INNER JOIN calibrated_sensor " +
+                "ON sensor.id = calibrated_sensor.id " +
                 "LEFT JOIN sensor_actuator sa ON " +
                 "sa.sensor_id = sensor.id " +
                 "LEFT JOIN actuator a ON " +
                 "sa.actuator_id = a.id " +
                 "WHERE sensor.id = ?";
-
         return jdbcTemplateHelper.query(query, calibratedSensorResultSetExtractor(), id).get(0);
     }
 

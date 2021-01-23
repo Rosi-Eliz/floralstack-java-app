@@ -56,6 +56,11 @@ public class PlantController {
         plantService.deletePlant(id);
     }
 
+    @PostMapping(path = "delete/{id}")
+    public void postDeletePlant(@PathVariable("id") Integer id) {
+        plantService.deletePlant(id);
+    }
+
     @PostMapping(path = "{id}/attach_static_sensor")
     public void attachStaticSensor(@PathVariable("id") Integer id, @RequestBody @Valid IdentityRequestModel identityRequestModel){
         plantService.attachStaticSensor(id, identityRequestModel.getId());

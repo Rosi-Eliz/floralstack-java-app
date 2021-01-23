@@ -73,6 +73,11 @@ public class SensorController {
         sensorService.deleteSensor(id);
     }
 
+    @PostMapping(path = "delete/{id}")
+    public void postDeleteSensor(@PathVariable("id") Integer id) {
+        sensorService.deleteSensor(id);
+    }
+
     @PostMapping(path = "{id}/attach_actuator")
     public void attachActuator(@PathVariable("id") Integer id, @RequestBody @Valid IdentityRequestModel identityRequestModel){
         sensorService.attachActuator(id, identityRequestModel.getId());
