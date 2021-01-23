@@ -19,7 +19,18 @@ public class PlantService {
 
     void createPlant(Plant plant) {
         Date currentDate = new Date();
-        plantDataAccessServiceProvider.createPlant(plant, currentDate);
+        Integer insertion = plantDataAccessServiceProvider.createPlant(plant, currentDate);
+        if (insertion == 0) {
+            throw ApiRequestExceptionFactory.failedCreationException;
+        }
+    }
+
+    void createDetailedPlant(Plant.Create plant) {
+        Date currentDate = new Date();
+        Integer insertion = plantDataAccessServiceProvider.createDetailedPlant(plant, currentDate);
+        if (insertion == 0) {
+            throw ApiRequestExceptionFactory.failedCreationException;
+        }
     }
 
     void updatePlant(Plant plant) {

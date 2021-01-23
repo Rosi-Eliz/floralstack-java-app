@@ -13,6 +13,41 @@ import java.util.Date;
 import java.util.List;
 
 public class Plant {
+    public static class Create{
+        @NotBlank
+        private final String name;
+        private final String description;
+        private final Integer environmentId;
+        private final Integer ownerId;
+
+        public Create(
+                      @JsonProperty("name") String name,
+                      @JsonProperty("description") String description,
+                      @JsonProperty("environment_id") Integer environmentId,
+                      @JsonProperty("owner_id") Integer ownerId) {
+            this.name = name;
+            this.description = description;
+            this.environmentId = environmentId;
+            this.ownerId = ownerId;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public Integer getEnvironmentId() {
+            return environmentId;
+        }
+
+        public Integer getOwnerId() {
+            return ownerId;
+        }
+    }
+
     public static class Update{
         @NotNull
         private final Integer id;

@@ -13,5 +13,4 @@ BEGIN
     INSERT_CALIBRATED_SENSOR('Second calibrated sensor', 'alternative calibrated sensor desc', 'normal priority', 'an7M2', 'ml', 11.4, 'calibrated', 87.363, 10.4, 22.5);
     INSERT_PLANT_CALIBRATED_SENSOR(2, 3);
     INSERT_PLANT_CALIBRATED_SENSOR(2, 4);
-
 END;

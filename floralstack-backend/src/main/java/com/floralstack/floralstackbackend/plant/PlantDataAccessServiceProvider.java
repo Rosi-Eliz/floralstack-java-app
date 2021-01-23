@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface PlantDataAccessServiceProvider {
     int createPlant(Plant plant, Date creationDate);
+    int createDetailedPlant(Plant.Create plant, Date currentDate);
     Plant getPlant(Integer id);
     List<Plant> getPlantsForOwner(Integer id);
     List<Plant> getAllPlantsForEnvironment(Integer id);

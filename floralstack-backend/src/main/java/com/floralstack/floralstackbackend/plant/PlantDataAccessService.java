@@ -42,6 +42,26 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
     }
 
     @Override
+    public int createDetailedPlant(Plant.Create plant, Date currentDate) {
+        String query = "" +
+                "INSERT INTO plant " +
+                "(name, " +
+                "description, " +
+                "environment_id, " +
+                "owner_id, " +
+                "creation_date) VALUES " +
+                "(?, ?, ?, ?, ?)";
+
+        return jdbcTemplateHelper.update(
+                query,
+                plant.getName(),
+                plant.getDescription(),
+                plant.getEnvironmentId(),
+                plant.getOwnerId(),
+                currentDate);
+    }
+
+    @Override
     public Plant getPlant(Integer id) {
         String query = "" +
                 "SELECT " +

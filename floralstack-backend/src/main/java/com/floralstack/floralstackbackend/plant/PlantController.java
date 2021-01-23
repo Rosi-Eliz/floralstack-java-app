@@ -16,9 +16,10 @@ public class PlantController {
     public PlantController(PlantService plantService) {
         this.plantService = plantService;
     }
+
     @PostMapping
-    public void addPlant(@RequestBody @Valid Plant plant){
-        plantService.createPlant(plant);
+    public void createDetailedPlant(@RequestBody @Valid Plant.Create plant){
+        plantService.createDetailedPlant(plant);
     }
 
     @GetMapping(path = "{id}")

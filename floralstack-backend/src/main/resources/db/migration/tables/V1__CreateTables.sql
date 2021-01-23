@@ -110,3 +110,4 @@ CREATE TABLE sensor_actuator
     FOREIGN KEY (sensor_id) REFERENCES sensor (id),
     FOREIGN KEY (actuator_id) REFERENCES actuator (id)
 )
+
