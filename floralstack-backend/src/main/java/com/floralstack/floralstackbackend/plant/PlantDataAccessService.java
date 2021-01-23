@@ -194,11 +194,16 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 "cs.max_value AS max_value, " +
                 "cs.min_value AS min_value, " +
                 "cs.percentage_threshold AS percentage_threshold, " +
-                "a.id AS actuator_id, " +
-                "a.name AS actuator_name, " +
-                "a.description AS actuator_description, " +
-                "a.priority AS actuator_priority, " +
-                "a.input_identifier AS input_identifier " +
+                "asa.id AS static_actuator_id, " +
+                "asa.name AS static_actuator_name, " +
+                "asa.description AS static_actuator_description, " +
+                "asa.priority AS static_actuator_priority, " +
+                "asa.input_identifier AS static_input_identifier, " +
+                "ac.id AS calibrated_actuator_id, " +
+                "ac.name AS calibrated_actuator_name, " +
+                "ac.description AS calibrated_actuator_description, " +
+                "ac.priority AS calibrated_actuator_priority, " +
+                "ac.input_identifier AS calibrated_input_identifier " +
                 "FROM plant p " +
                 "LEFT JOIN " +
                 "\"USER\" u ON " +
@@ -227,8 +232,17 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 "sensor csp ON " +
                 "cs.id = csp.id " +
                 "LEFT JOIN " +
-                "actuator a ON " +
-                "csp.actuator_id = a.id "  +
+                "sensor_actuator sa ON " +
+                "ssp.id = sa.sensor_id " +
+                "LEFT JOIN " +
+                "actuator asa ON " +
+                "sa.actuator_id = asa.id " +
+                "LEFT JOIN " +
+                "sensor_actuator ca ON " +
+                "csp.id = ca.sensor_id " +
+                "LEFT JOIN " +
+                "actuator ac ON " +
+                "ca.actuator_id = ac.id " +
                 "WHERE u.id = ?";
 
         return jdbcTemplateHelper.query(query, plantResultSetExtractor(), id);
@@ -272,11 +286,16 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 "cs.max_value AS max_value, " +
                 "cs.min_value AS min_value, " +
                 "cs.percentage_threshold AS percentage_threshold, " +
-                "a.id AS actuator_id, " +
-                "a.name AS actuator_name, " +
-                "a.description AS actuator_description, " +
-                "a.priority AS actuator_priority, " +
-                "a.input_identifier AS input_identifier " +
+                "asa.id AS static_actuator_id, " +
+                "asa.name AS static_actuator_name, " +
+                "asa.description AS static_actuator_description, " +
+                "asa.priority AS static_actuator_priority, " +
+                "asa.input_identifier AS static_input_identifier, " +
+                "ac.id AS calibrated_actuator_id, " +
+                "ac.name AS calibrated_actuator_name, " +
+                "ac.description AS calibrated_actuator_description, " +
+                "ac.priority AS calibrated_actuator_priority, " +
+                "ac.input_identifier AS calibrated_input_identifier " +
                 "FROM plant p " +
                 "LEFT JOIN " +
                 "\"USER\" u ON " +
@@ -305,8 +324,17 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
                 "sensor csp ON " +
                 "cs.id = csp.id " +
                 "LEFT JOIN " +
-                "actuator a ON " +
-                "csp.actuator_id = a.id "  +
+                "sensor_actuator sa ON " +
+                "ssp.id = sa.sensor_id " +
+                "LEFT JOIN " +
+                "actuator asa ON " +
+                "sa.actuator_id = asa.id " +
+                "LEFT JOIN " +
+                "sensor_actuator ca ON " +
+                "csp.id = ca.sensor_id " +
+                "LEFT JOIN " +
+                "actuator ac ON " +
+                "ca.actuator_id = ac.id " +
                 "WHERE environment_id = ?";
 
         return jdbcTemplateHelper.query(query, plantResultSetExtractor(), id);

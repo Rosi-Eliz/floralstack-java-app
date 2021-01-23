@@ -21,7 +21,7 @@ CREATE TABLE "USER"
     first_name VARCHAR2(30),
     last_name VARCHAR(30),
     birth_date DATE,
-    user_role VARCHAR(30),
+    user_role VARCHAR(30) CHECK( user_role IN ('standard','moderator','administrator')),
     email VARCHAR(40) UNIQUE,
     user_password VARCHAR(40) NOT NULL,
     PRIMARY KEY (id)

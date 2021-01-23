@@ -1,5 +1,5 @@
 BEGIN
-    INSERT_USER('First', 'Last', date '2021-01-16', 'admin','email@abv.bg', 'password');
+    INSERT_USER('First', 'Last', date '2021-01-16', 'administrator','email@abv.bg', 'password');
     INSERT_ENVIRONMENT('Environment name', 'Envrionment description');
     INSERT_PLANT('Test plant', 'Description', 1, 1, date '2020-07-07');
     INSERT_PLANT('Test3', 'Desc', 1, 1, date '2020-12-12');
