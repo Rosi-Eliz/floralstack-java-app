@@ -1,1 +1,0 @@
-web: cd floralstack-backend
