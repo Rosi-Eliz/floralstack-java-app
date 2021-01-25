@@ -56,6 +56,10 @@
             <artifactId>flyway-core</artifactId>
             <version>6.5.7</version>
         </dependency>
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -68,6 +72,16 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>7.5.0</version>
+                <configuration>
+                    <url>jdbc:oracle:thin:@oracle-lab.cs.univie.ac.at:1521/lab</url>
+                    <user>a11918541</user>
+                    <password>ro1402</password>
+                </configuration>
             </plugin>
         </plugins>
     </build>
