@@ -5,6 +5,7 @@ import com.floralstack.floralstackbackend.actuator.Actuator;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 public class CalibratedSensor extends Sensor{
     @NotNull
@@ -22,11 +23,11 @@ public class CalibratedSensor extends Sensor{
                             @JsonProperty("unit_of_measurement") @NotBlank String unitOfMeasurement,
                             @JsonProperty("last_measurement_value") Double lastMeasurementValue,
                             @JsonProperty("threshold_type") @NotBlank String thresholdType,
-                            @JsonProperty("actuator") Actuator actuator,
+                            @JsonProperty("actuators") List<Actuator> actuators,
                             @JsonProperty("max_value") @NotNull Double maxValue,
                             @JsonProperty("min_value") @NotNull Double minValue,
                             @JsonProperty("percentage_threshold") @NotNull Double percentageThreshold) {
-        super(id, name, description, priority, outputIdentifier, unitOfMeasurement, lastMeasurementValue, thresholdType, actuator);
+        super(id, name, description, priority, outputIdentifier, unitOfMeasurement, lastMeasurementValue, thresholdType, actuators);
         this.maxValue = maxValue;
         this.minValue = minValue;
         this.percentageThreshold = percentageThreshold;

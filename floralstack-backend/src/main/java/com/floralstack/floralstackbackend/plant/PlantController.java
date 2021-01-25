@@ -16,9 +16,10 @@ public class PlantController {
     public PlantController(PlantService plantService) {
         this.plantService = plantService;
     }
+
     @PostMapping
-    public void addPlant(@RequestBody @Valid Plant plant){
-        plantService.createPlant(plant);
+    public void createDetailedPlant(@RequestBody @Valid Plant.Create plant){
+        plantService.createDetailedPlant(plant);
     }
 
     @GetMapping(path = "{id}")
@@ -46,8 +47,18 @@ public class PlantController {
         plantService.updatePlant(plant);
     }
 
+    @PostMapping("update")
+    public void updatePlant(@RequestBody @Valid Plant.Update plant){
+        plantService.updatePlant(plant);
+    }
+
     @DeleteMapping(path = "{id}")
     public void deletePlant(@PathVariable("id") Integer id) {
+        plantService.deletePlant(id);
+    }
+
+    @PostMapping(path = "delete/{id}")
+    public void postDeletePlant(@PathVariable("id") Integer id) {
         plantService.deletePlant(id);
     }
 
@@ -55,9 +66,17 @@ public class PlantController {
     public void attachStaticSensor(@PathVariable("id") Integer id, @RequestBody @Valid IdentityRequestModel identityRequestModel){
         plantService.attachStaticSensor(id, identityRequestModel.getId());
     }
-
     @PostMapping(path = "{id}/attach_calibrated_sensor")
     public void attachCalibratedSensor(@PathVariable("id") Integer id, @RequestBody @Valid IdentityRequestModel identityRequestModel){
         plantService.attachCalibratedSensor(id, identityRequestModel.getId());
+    }
+    @PostMapping(path = "{id}/detach_calibrated_sensor")
+    public void detachCalibratedSensor(@PathVariable("id") Integer id, @RequestBody @Valid IdentityRequestModel identityRequestModel){
+        plantService.detachCalibratedSensor(id, identityRequestModel.getId());
+    }
+
+    @PostMapping(path = "{id}/detach_static_sensor")
+    public void detachStaticSensor(@PathVariable("id") Integer id, @RequestBody @Valid IdentityRequestModel identityRequestModel){
+        plantService.detachStaticSensor(id, identityRequestModel.getId());
     }
 }

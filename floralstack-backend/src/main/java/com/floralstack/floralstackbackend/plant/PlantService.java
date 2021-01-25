@@ -19,10 +19,31 @@ public class PlantService {
 
     void createPlant(Plant plant) {
         Date currentDate = new Date();
-        plantDataAccessServiceProvider.createPlant(plant, currentDate);
+        Integer insertion = plantDataAccessServiceProvider.createPlant(plant, currentDate);
+        if (insertion == 0) {
+            throw ApiRequestExceptionFactory.failedCreationException;
+        }
+    }
+
+    void createDetailedPlant(Plant.Create plant) {
+        Date currentDate = new Date();
+        Integer insertion = plantDataAccessServiceProvider.createDetailedPlant(plant, currentDate);
+        if (insertion == 0) {
+            throw ApiRequestExceptionFactory.failedCreationException;
+        }
     }
 
     void updatePlant(Plant plant) {
+        if (plant.getId() == null) {
+            throw ApiRequestExceptionFactory.missingIdException;
+        }
+        Integer update = plantDataAccessServiceProvider.updatePlant(plant);
+        if (update == 0) {
+            throw ApiRequestExceptionFactory.failedUpdateException;
+        }
+    }
+
+    void updatePlant(Plant.Update plant) {
         if (plant.getId() == null) {
             throw ApiRequestExceptionFactory.missingIdException;
         }
@@ -55,5 +76,19 @@ public class PlantService {
 
     public void attachCalibratedSensor(Integer plantId, Integer calibratedSensorId) {
         plantDataAccessServiceProvider.attachCalibratedSensor(plantId, calibratedSensorId);
+    }
+
+    public void detachStaticSensor(Integer plantId, Integer staticSensorId) {
+        Integer delete = plantDataAccessServiceProvider.detachStaticSensor(plantId, staticSensorId);
+        if (delete == 0) {
+            throw ApiRequestExceptionFactory.failedDeleteException;
+        }
+    }
+
+    public void detachCalibratedSensor(Integer plantId, Integer calibratedSensorId) {
+        Integer delete = plantDataAccessServiceProvider.detachCalibratedSensor(plantId, calibratedSensorId);
+        if (delete == 0) {
+            throw ApiRequestExceptionFactory.failedDeleteException;
+        }
     }
 }

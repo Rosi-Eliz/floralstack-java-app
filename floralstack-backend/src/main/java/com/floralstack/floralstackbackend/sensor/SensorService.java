@@ -18,7 +18,7 @@ public class SensorService {
     //Static sensor methods:
 
     public void createStaticSensor(StaticSensor staticSensor) {
-        SensorDataAccessService.CreateSensorResult result = sensorDataAccessService.createSensor(staticSensor);
+        CreateSensorResult result = sensorDataAccessService.createSensor(staticSensor);
         if(result.getQueryResult() == 0)
         {
             throw ApiRequestExceptionFactory.failedCreationException;
@@ -42,7 +42,7 @@ public class SensorService {
     //Calibrated sensor methods
 
     public void createCalibratedSensor(CalibratedSensor calibratedSensor) {
-        SensorDataAccessService.CreateSensorResult result = sensorDataAccessService.createSensor(calibratedSensor);
+        CreateSensorResult result = sensorDataAccessService.createSensor(calibratedSensor);
         if(result.getQueryResult() == 0)
         {
             throw ApiRequestExceptionFactory.failedCreationException;
@@ -90,5 +90,12 @@ public class SensorService {
 
     public void attachActuator(Integer id, Integer id1) {
          sensorDataAccessService.attachActuator(id, id1);
+    }
+
+    public void detachActuator(Integer id, Integer id1) {
+        Integer detachment = sensorDataAccessService.detachActuator(id, id1);
+        if (detachment == 0) {
+            throw ApiRequestExceptionFactory.failedDeleteException;
+        }
     }
 }

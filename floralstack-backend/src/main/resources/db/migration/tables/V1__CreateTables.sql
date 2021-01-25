@@ -21,7 +21,7 @@ CREATE TABLE "USER"
     first_name VARCHAR2(30),
     last_name VARCHAR(30),
     birth_date DATE,
-    user_role VARCHAR(30),
+    user_role VARCHAR(30) CHECK( user_role IN ('standard','moderator','administrator')),
     email VARCHAR(40) UNIQUE,
     user_password VARCHAR(40) NOT NULL,
     PRIMARY KEY (id)
@@ -36,8 +36,8 @@ CREATE TABLE plant
     owner_id         INTEGER,
     creation_date    DATE,
     PRIMARY KEY (id),
-    FOREIGN KEY (environment_id) REFERENCES environment (id) ON DELETE CASCADE,
-    FOREIGN KEY (owner_id) REFERENCES "USER" (id) ON DELETE CASCADE
+    FOREIGN KEY (environment_id) REFERENCES environment (id),
+    FOREIGN KEY (owner_id) REFERENCES "USER" (id)
 );
 
 CREATE TABLE actuator
@@ -62,9 +62,7 @@ CREATE TABLE sensor
     unit_of_measurement VARCHAR(30) NOT NULL,
     last_measurement_value NUMBER,
     threshold_type VARCHAR(30),
-    actuator_id INTEGER,
-    PRIMARY KEY (id),
-    FOREIGN KEY (actuator_id) REFERENCES actuator (id)
+    PRIMARY KEY (id)
 );
 
 
@@ -103,3 +101,13 @@ CREATE TABLE plant_calibrated_sensor
     FOREIGN KEY (plant_id) REFERENCES plant (id),
     FOREIGN KEY (calibrated_sensor_id) REFERENCES calibrated_sensor (id) ON DELETE CASCADE
 );
+
+CREATE TABLE sensor_actuator
+(
+    sensor_id INTEGER UNIQUE,
+    actuator_id INTEGER UNIQUE,
+    PRIMARY KEY(sensor_id, actuator_id),
+    FOREIGN KEY (sensor_id) REFERENCES sensor (id),
+    FOREIGN KEY (actuator_id) REFERENCES actuator (id)
+)
+
