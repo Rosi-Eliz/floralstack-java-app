@@ -109,5 +109,18 @@ CREATE TABLE sensor_actuator
     PRIMARY KEY(sensor_id, actuator_id),
     FOREIGN KEY (sensor_id) REFERENCES sensor (id),
     FOREIGN KEY (actuator_id) REFERENCES actuator (id)
-)
+);
+
+CREATE TABLE "RESOURCE"
+(
+    id                       INTEGER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) NOT NULL,
+    sensor_id                INTEGER UNIQUE,
+    name                     VARCHAR2(30),
+    description              VARCHAR2(30),
+    unit_of_measurement      VARCHAR(30) NOT NULL,
+    drawn_amount             NUMBER,
+    current_amount           NUMBER,
+    PRIMARY KEY (id),
+    FOREIGN KEY(sensor_id) REFERENCES sensor ON DELETE CASCADE
+);
 
