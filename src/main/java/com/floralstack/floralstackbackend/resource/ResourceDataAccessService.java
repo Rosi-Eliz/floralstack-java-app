@@ -22,7 +22,7 @@ public class ResourceDataAccessService implements ResourceDataAccessServiceProvi
 
         String query = "" +
                 "INSERT INTO \"RESOURCE\" (" +
-                " sensor_id," +
+                " a_id," +
                 " name, " +
                 " description, " +
                 " unit_of_measurement," +
@@ -33,7 +33,7 @@ public class ResourceDataAccessService implements ResourceDataAccessServiceProvi
 
         return jdbcTemplateHelper.update(
                 query,
-                resource.getSensorId(),
+                resource.getActuatorId(),
                 resource.getName(),
                 resource.getDescription(),
                 resource.getUnitOfMeasurement(),
@@ -98,7 +98,7 @@ public class ResourceDataAccessService implements ResourceDataAccessServiceProvi
 
             Resource resource =  new Resource(
                     resultSet.getInt("id"),
-                    resultSet.getInt("sensor_id"),
+                    resultSet.getInt("a_id"),
                     resultSet.getString("name"),
                     resultSet.getString("description"),
                     resultSet.getString("unit_of_measurement"),

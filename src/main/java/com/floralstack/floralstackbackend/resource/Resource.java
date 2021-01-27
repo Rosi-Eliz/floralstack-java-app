@@ -11,7 +11,7 @@ public class Resource {
 
     private final Integer id;
     @NotNull
-    private final Integer sensorId;
+    private final Integer actuatorID;
     private final String name;
     private final String description;
     private final String unitOfMeasurement;
@@ -19,14 +19,14 @@ public class Resource {
     private final Double drawnAmount;
 
     public Resource(@JsonProperty("id")Integer id,
-                    @JsonProperty("sensor_id")Integer sensorId,
+                    @JsonProperty("actuator_id")Integer sensorId,
                     @JsonProperty("name") String name,
                     @JsonProperty("description") String description,
                     @JsonProperty("unit_of_measurement") String unitOfMeasurement,
                     @JsonProperty("current_amount") Double currentAmount,
                     @JsonProperty("drawn_amount") Double drawnAmount) {
         this.id = id;
-        this.sensorId = sensorId;
+        this.actuatorID = sensorId;
         this.name = name;
         this.description = description;
         this.unitOfMeasurement = unitOfMeasurement;
@@ -38,8 +38,8 @@ public class Resource {
         return id;
     }
 
-    public Integer getSensorId() {
-        return sensorId;
+    public Integer getActuatorId() {
+        return actuatorID;
     }
 
     public String getName() {
