@@ -97,6 +97,6 @@ public class PlantService {
         List<Plant> plants = plantDataAccessServiceProvider.getPlantsBatch(offset, batch);
         Integer plantsCount = plantDataAccessServiceProvider.getAllPlantsCount();
         Integer lastPage = (int) Math.ceil((double)plantsCount / batch);
-        return new PlantsBatch(plants, page, lastPage, batch);
+        return new PlantsBatch(plants, page, lastPage, batch, plantsCount);
     }
 }
