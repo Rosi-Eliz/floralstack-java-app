@@ -10,15 +10,18 @@ public class PlantsBatch {
     private Integer currentPage;
     private Integer lastPage;
     private Integer batchSize;
+    private Integer plantsCount;
 
     public PlantsBatch(@JsonProperty("plants") List<Plant> plants,
                        @JsonProperty("current_page") Integer currentPage,
                        @JsonProperty("last_page") Integer lastPage,
-                       @JsonProperty("batch_size") Integer batchSize) {
+                       @JsonProperty("batch_size") Integer batchSize,
+                       @JsonProperty("plants_count") Integer plantsCount) {
         this.plants = plants;
         this.currentPage = currentPage;
         this.lastPage = lastPage;
         this.batchSize = batchSize;
+        this.plantsCount = plantsCount;
     }
 
     public List<Plant> getPlants() {
@@ -35,5 +38,9 @@ public class PlantsBatch {
 
     public Integer getBatchSize() {
         return batchSize;
+    }
+
+    public Integer getPlantsCount() {
+        return plantsCount;
     }
 }
