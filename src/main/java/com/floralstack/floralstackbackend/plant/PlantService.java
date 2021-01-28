@@ -91,4 +91,12 @@ public class PlantService {
             throw ApiRequestExceptionFactory.failedDeleteException;
         }
     }
+
+    public PlantsBatch getPlantsBatch(Integer page, Integer batch) {
+        Integer offset = (page - 1) * batch;
+        List<Plant> plants = plantDataAccessServiceProvider.getPlantsBatch(offset, batch);
+        Integer plantsCount = plantDataAccessServiceProvider.getAllPlantsCount();
+        Integer lastPage = (int) Math.ceil((double)plantsCount / batch);
+        return new PlantsBatch(plants, page, lastPage, batch);
+    }
 }

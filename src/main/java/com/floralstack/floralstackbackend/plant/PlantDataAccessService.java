@@ -430,6 +430,110 @@ public class PlantDataAccessService implements PlantDataAccessServiceProvider{
 
         return jdbcTemplateHelper.query(query, plantResultSetExtractor());
     }
+
+    @Override
+    public List<Plant> getPlantsBatch(Integer offset, Integer batchSize) {
+        String query = "" +
+                "SELECT " +
+                "p.id AS plant_id, " +
+                "p.name AS plant_name, " +
+                "p.description AS plant_description, " +
+                "p.owner_id AS owner_id, " +
+                "p.creation_date AS plant_creation_date, " +
+                "u.id AS user_id, " +
+                "u.first_name, " +
+                "u.last_name, " +
+                "u.birth_date, " +
+                "u.user_role, " +
+                "u.email, " +
+                "e.id AS environment_id, " +
+                "e.name AS environment_name, " +
+                "e.description AS environment_description, " +
+                "ssp.id AS static_sensor_id, " +
+                "ssp.name AS static_name, " +
+                "ssp.description AS static_description, " +
+                "ssp.priority AS static_priority, " +
+                "ssp.output_identifier AS static_output_identifier, " +
+                "ssp.last_measurement_value AS static_last_measurement_value, " +
+                "ssp.unit_of_measurement AS static_unit_of_measurement, " +
+                "ssp.threshold_type AS static_threshold_type, " +
+                "ss.threshold_offset AS threshold_offset, " +
+                "csp.id AS calibrated_sensor_id, " +
+                "csp.name AS calibrated_name, " +
+                "csp.description AS calibrated_description, " +
+                "csp.priority AS calibrated_priority, " +
+                "csp.output_identifier AS calibrated_output_identifier, " +
+                "csp.last_measurement_value AS calibrated_last_measurement_value, " +
+                "csp.unit_of_measurement AS calibrated_unit_of_measurement, " +
+                "csp.threshold_type AS calibrated_threshold_type, " +
+                "cs.max_value AS max_value, " +
+                "cs.min_value AS min_value, " +
+                "cs.percentage_threshold AS percentage_threshold, " +
+                "asa.id AS static_actuator_id, " +
+                "asa.name AS static_actuator_name, " +
+                "asa.description AS static_actuator_description, " +
+                "asa.priority AS static_actuator_priority, " +
+                "asa.input_identifier AS static_input_identifier, " +
+                "ac.id AS calibrated_actuator_id, " +
+                "ac.name AS calibrated_actuator_name, " +
+                "ac.description AS calibrated_actuator_description, " +
+                "ac.priority AS calibrated_actuator_priority, " +
+                "ac.input_identifier AS calibrated_input_identifier " +
+                "FROM (" +
+                "SELECT * from plant" +
+                " order by plant.id" +
+                " offset ? rows" +
+                " fetch next ? rows only) p " +
+                "LEFT JOIN " +
+                "\"USER\" u ON " +
+                "p.owner_id = u.id " +
+                "LEFT JOIN " +
+                "environment e ON " +
+                "p.environment_id = e.id " +
+                "" +
+                "LEFT JOIN " +
+                "plant_static_sensor pss ON " +
+                "p.id = pss.plant_id " +
+                "LEFT JOIN " +
+                "static_sensor ss ON " +
+                "pss.static_sensor_id = ss.id " +
+                "LEFT JOIN " +
+                "sensor ssp ON " +
+                "ss.id = ssp.id " +
+                "" +
+                "LEFT JOIN " +
+                "plant_calibrated_sensor pcs ON " +
+                "p.id = pcs.plant_id " +
+                "LEFT JOIN " +
+                "calibrated_sensor cs ON " +
+                "pcs.calibrated_sensor_id = cs.id " +
+                "LEFT JOIN " +
+                "sensor csp ON " +
+                "cs.id = csp.id " +
+                "LEFT JOIN " +
+                "sensor_actuator sa ON " +
+                "ssp.id = sa.sensor_id " +
+                "LEFT JOIN " +
+                "actuator asa ON " +
+                "sa.actuator_id = asa.id " +
+                "LEFT JOIN " +
+                "sensor_actuator ca ON " +
+                "csp.id = ca.sensor_id " +
+                "LEFT JOIN " +
+                "actuator ac ON " +
+                "ca.actuator_id = ac.id ";
+
+        return jdbcTemplateHelper.query(query, plantResultSetExtractor(), offset, batchSize);
+    }
+
+    @Override
+    public Integer getAllPlantsCount() {
+        String query = "" +
+                "SELECT COUNT(*) " +
+                "FROM plant";
+        return jdbcTemplateHelper.queryForObject(query, Integer.class);
+    }
+
     @Override
     public Integer updatePlant(Plant plant) {
         String query = "" +
