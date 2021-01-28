@@ -65,6 +65,13 @@ public class JdbcTemplateHelper {
         return validate(block);
     }
 
+    public <T> T queryForObject(String sql, Class<T> requiredType, @Nullable Object... args)  {
+        JdbcValidator<T> block = () -> {
+            return jdbcTemplate.queryForObject(sql, requiredType, args);
+        };
+        return validate(block);
+    }
+
     private <T> T validate(JdbcValidator<T> validator) {
         T result = null;
         try {

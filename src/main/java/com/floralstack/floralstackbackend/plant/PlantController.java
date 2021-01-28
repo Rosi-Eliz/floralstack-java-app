@@ -2,6 +2,7 @@ package com.floralstack.floralstackbackend.plant;
 
 import com.floralstack.floralstackbackend.commons.IdentityRequestModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,6 +26,12 @@ public class PlantController {
     @GetMapping(path = "{id}")
     public Plant getPlant(@PathVariable("id") Integer id) {
         return plantService.getPlant(id);
+    }
+
+    @GetMapping("batch")
+    public PlantsBatch getPlantsBatch(@RequestParam("page") Integer page,
+                                      @RequestParam("batch") Integer batch) {
+        return plantService.getPlantsBatch(page, batch);
     }
 
     @GetMapping

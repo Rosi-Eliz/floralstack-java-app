@@ -13,6 +13,8 @@ public interface PlantDataAccessServiceProvider {
     List<Plant> getPlantsForOwner(Integer id);
     List<Plant> getAllPlantsForEnvironment(Integer id);
     List<Plant> getAllPlants();
+    List<Plant> getPlantsBatch(Integer offset, Integer batchSize);
+    Integer getAllPlantsCount();
     Integer updatePlant(Plant plant);
     Integer updatePlant(Plant.Update plant);
     Integer deletePlant(Integer id);
